@@ -376,7 +376,7 @@
 "Plac Zabaw Widok":{"coordinates":"50.077095,19.88488","is_ex":"No","can_be_ex":"No","districts":"bronowice"},
 "Place Zabaw":{"coordinates":"50.011267,20.017034","is_ex":"No","can_be_ex":"No","districts":"bieżanów-prokocim"},
 "Placyk Zabaw Dyw.303":{"coordinates":"50.083005,20.012997","is_ex":"No","can_be_ex":"No","districts":"czyżyny"},
-"Playground":{"coordinates":"50.017883,19.97261","is_ex":"Yes","can_be_ex":"Yes","districts":"podgórze-duchackie"},
+"Playground (koło Nowosądeckiej)":{"coordinates":"50.017883,19.97261","is_ex":"Yes","can_be_ex":"Yes","districts":"podgórze-duchackie"},
 "Playground Borek Fałęcki":{"coordinates":"50.019801,19.918667","is_ex":"No","can_be_ex":"No","districts":"łagiewniki-borek"},
 "Playground in Park Jerzmanowskich":{"coordinates":"50.017765,19.994669","is_ex":"Yes","can_be_ex":"Yes","districts":"bieżanów-prokocim"},
 "Płaskorzeźba Kobiety":{"coordinates":"50.068108,19.929005","is_ex":"No","can_be_ex":"No","districts":"centrum","Notes":"Włości Makonde"},
@@ -586,7 +586,9 @@
 "Zołnierzom":{"coordinates":"50.073532,19.950022","is_ex":"No","can_be_ex":"No","districts":"olsza"},
 "Żołnierzowi Armii Kraków":{"coordinates":"50.077085,19.955095","is_ex":"No","can_be_ex":"No","districts":"olsza"},
 "Żółty Jezus":{"coordinates":"49.989256,19.915026","is_ex":"No","can_be_ex":"No","districts":"pozostałe"},
-"Żużlowy Stadion K. S. Wanda":{"coordinates":"50.084432,20.045177","is_ex":"No","can_be_ex":"No","districts":"nowa-huta"}
+"Żużlowy Stadion K. S. Wanda":{"coordinates":"50.084432,20.045177","is_ex":"No","can_be_ex":"No","districts":"nowa-huta"},
+"Playground":{"coordinates":"50.071341,19.990693","is_ex":"No","can_be_ex":"Yes","districts":"czyżyny"},
+"Bramy Piekieł":{"coordinates":"50.087914,19.955218","is_ex":"No","districts":"prądnik"}
 },
 "443820658934153216":{
 "4 Clubs Fountain":{"coordinates":"50.055361,19.93251","is_ex":"No","can_be_ex":"No","districts":"centrum"},
@@ -965,7 +967,7 @@
 "Plac Zabaw Widok":{"coordinates":"50.077095,19.88488","is_ex":"No","can_be_ex":"No","districts":"bronowice"},
 "Place Zabaw":{"coordinates":"50.011267,20.017034","is_ex":"No","can_be_ex":"No","districts":"bieżanów-prokocim"},
 "Placyk Zabaw Dyw.303":{"coordinates":"50.083005,20.012997","is_ex":"No","can_be_ex":"No","districts":"czyżyny"},
-"Playground":{"coordinates":"50.017883,19.97261","is_ex":"Yes","can_be_ex":"Yes","districts":"podgórze-duchackie"},
+"Playground (koło Nowosądeckiej)":{"coordinates":"50.017883,19.97261","is_ex":"Yes","can_be_ex":"Yes","districts":"podgórze-duchackie"},
 "Playground Borek Fałęcki":{"coordinates":"50.019801,19.918667","is_ex":"No","can_be_ex":"No","districts":"łagiewniki-borek"},
 "Playground in Park Jerzmanowskich":{"coordinates":"50.017765,19.994669","is_ex":"Yes","can_be_ex":"Yes","districts":"bieżanów-prokocim"},
 "Płaskorzeźba Kobiety":{"coordinates":"50.068108,19.929005","is_ex":"No","can_be_ex":"No","districts":"centrum","Notes":"Włości Makonde"},
@@ -1175,6 +1177,8 @@
 "Zołnierzom":{"coordinates":"50.073532,19.950022","is_ex":"No","can_be_ex":"No","districts":"olsza"},
 "Żołnierzowi Armii Kraków":{"coordinates":"50.077085,19.955095","is_ex":"No","can_be_ex":"No","districts":"olsza"},
 "Żółty Jezus":{"coordinates":"49.989256,19.915026","is_ex":"No","can_be_ex":"No","districts":"pozostałe"},
-"Żużlowy Stadion K. S. Wanda":{"coordinates":"50.084432,20.045177","is_ex":"No","can_be_ex":"No","districts":"nowa-huta"}
+"Żużlowy Stadion K. S. Wanda":{"coordinates":"50.084432,20.045177","is_ex":"No","can_be_ex":"No","districts":"nowa-huta"},
+"Playground":{"coordinates":"50.071341,19.990693","is_ex":"No","can_be_ex":"Yes","districts":"czyżyny"},
+"Bramy Piekieł":{"coordinates":"50.087914,19.955218","is_ex":"No","districts":"prądnik"}
 }
 }
