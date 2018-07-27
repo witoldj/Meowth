@@ -1256,7 +1256,7 @@
 "Mural - Czy wiesz co ona czuje?":{"coordinates":"54.5192562,18.5307464","is_ex":"No","can_be_ex":"No","districts":["centrum"]},
 "Parafia pw. Świętej Rodziny":{"coordinates":"54.5229433,18.5213882","is_ex":"No","can_be_ex":"No","districts":["centrum"]},
 "Stella Maris":{"coordinates":"54.522146,18.51991","is_ex":"No","can_be_ex":"No","districts":["centrum"]},
-"Kamienny krzyż przy ul. Wolności":{"coordinates":"54.5190841,18.5224543","is_ex":"No","can_be_ex":"No","districts":["centrum"]},
+"kamienna rzeźba z ul wolności":{"coordinates":"54.5190841,18.5224543","is_ex":"No","can_be_ex":"No","districts":["centrum"]},
 "Mural Warszawska":{"coordinates":"54.5164569,18.5306525","is_ex":"No","can_be_ex":"No","districts":["centrum"]},
 "Dragon Mosaic":{"coordinates":"54.5141152,18.5306633","is_ex":"No","can_be_ex":"No","districts":["centrum"]},
 "Pilnuj Swoich Jajek":{"coordinates":"54.5147286,18.5348381","is_ex":"No","can_be_ex":"No","districts":["centrum"]},
@@ -1396,7 +1396,7 @@
 "Kapliczka Maryjna":{"coordinates":"54.558815,18.366319","is_ex":"No","can_be_ex":"No","districts":["rumia"]},
 "Kapliczka Pasterz Z Owieczką":{"coordinates":"54.568273,18.402494","is_ex":"No","can_be_ex":"No","districts":["rumia"]},
 "Kapliczka Sw. Jòzefa Z Dziciątkiem":{"coordinates":"54.574895,18.405603","is_ex":"No","can_be_ex":"No","districts":["rumia"]},
-"Krzyż rumia":{"coordinates":"54.581386,18.40374","is_ex":"No","districts":["rumia"]},
+"Krzyż rumia":{"coordinates":"54.581386,18.40374","is_ex":"No","can_be_ex":"No","districts":["rumia"]},
 "Krzyż na cmentarzu":{"coordinates":"54.580509,18.405741","is_ex":"No","can_be_ex":"No","districts":["rumia"]},
 "Krzyż obok Łyka":{"coordinates":"54.565282,18.411175","is_ex":"No","can_be_ex":"No","districts":["rumia"]},
 "Krzyż Przy Głównej":{"coordinates":"54.584097,18.364127","is_ex":"No","can_be_ex":"No","districts":["rumia"]},
@@ -1404,7 +1404,7 @@
 "Nawiedzony Dom":{"coordinates":"54.562056,18.397778","is_ex":"No","can_be_ex":"No","districts":["rumia"]},
 "Pasterz Z Owieczką":{"coordinates":"54.5575,18.392243","is_ex":"No","can_be_ex":"No","districts":["rumia"]},
 "Zabawki Dla Dzieci":{"coordinates":"54.568433,18.403168","is_ex":"No","can_be_ex":"No","districts":["rumia"]},
-"Plac Zabaw rumia":{"coordinates":"54.58712,18.388801","is_ex":"No","can_be_ex":"No","districts":["rumia"]},
+"Plac Zabaw lotnisko":{"coordinates":"54.58712,18.388801","is_ex":"No","can_be_ex":"No","districts":["rumia"]},
 "Pomnik Walki z Faszyzmem":{"coordinates":"54.578286,18.404598","is_ex":"No","can_be_ex":"No","districts":["rumia"]},
 "Rumia Pamięci AK":{"coordinates":"54.577408,18.387041","is_ex":"No","can_be_ex":"No","districts":["rumia"]},
 "Rumia Towarowa":{"coordinates":"54.566597,18.388987","is_ex":"No","can_be_ex":"No","districts":["rumia"]},
@@ -1416,6 +1416,7 @@
 "Street Workout":{"coordinates":"54.560761,18.41098","is_ex":"No","can_be_ex":"No","districts":["rumia"]},
 "Trafostacja":{"coordinates":"54.56014,18.409583","is_ex":"No","can_be_ex":"No","districts":["rumia"]},
 "Tròjmiejski Park Krajobrazowy":{"coordinates":"54.559735,18.380986","is_ex":"No","can_be_ex":"No","districts":["rumia"]},
-"WCK Mural":{"coordinates":"54.570029,18.38974","is_ex":"No","can_be_ex":"No","districts":["rumia"]}
+"WCK Mural":{"coordinates":"54.570029,18.38974","is_ex":"No","can_be_ex":"No","districts":["rumia"]},
+"plac zabaw janowo":{"coordinates":"54.566627,18.414279","is_ex":"No","can_be_ex":"No","districts":["rumia"]}
 }
 }
