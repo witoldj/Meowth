@@ -16,14 +16,14 @@ import time
 import traceback
 
 from contextlib import redirect_stdout
-from io import BytesIO
+#from io import BytesIO
 from operator import itemgetter
 from time import strftime
 
 import aiohttp
 import dateparser
 import hastebin
-from dateutil import tz
+#from dateutil import tz
 from dateutil.relativedelta import relativedelta
 
 import discord
@@ -38,6 +38,7 @@ from meowth.logs import init_loggers
 
 logger = init_loggers()
 
+
 def _get_prefix(bot, message):
     guild = message.guild
     try:
@@ -48,9 +49,11 @@ def _get_prefix(bot, message):
         prefix = bot.config['default_prefix']
     return commands.when_mentioned_or(prefix)(bot, message)
 
+
 Meowth = MeowthBot(
     command_prefix=_get_prefix, case_insensitive=True,
     activity=discord.Game(name="Pokemon Go"))
+
 
 def _correct_json(input_dict, output_dict):
     for key, value in input_dict.items():
@@ -74,6 +77,7 @@ def _correct_json(input_dict, output_dict):
                 _correct_json(value, output_dict[key])
             else:
                 output_dict[key] = value
+
 
 custom_error_handling(Meowth, logger)
 try:
@@ -138,7 +142,7 @@ def load_config():
     language = gettext.translation(
         'meowth', localedir='locale', languages=[config['bot-language']])
     language.install()
-    pokemon_language = [config['pokemon-language']]
+    #pokemon_language = [config['pokemon-language']]
     pokemon_path_source = os.path.join(
         'locale', '{0}', 'pkmn.json').format(config['pokemon-language'])
     raid_path_source = os.path.join('data', 'raid_info.json')
@@ -154,7 +158,8 @@ def load_config():
         type_list = json.load(fd)
     # Set spelling dictionary to our list of Pokemon
     pkmn_match.set_list(pkmn_info['pokemon_list'])
-    return (pokemon_path_source, raid_path_source)
+    return pokemon_path_source, raid_path_source
+
 
 pkmn_path, raid_path = load_config()
 
@@ -358,9 +363,10 @@ def create_gmaps_query(details, channel, type="raid"):
             newloc = details[newlocindex:newlocend + 1]
             return newloc
     details_list = details.split()
-    #look for lat/long coordinates in the location details. If provided,
-    #then channel location hints are not needed in the  maps query
-    if re.match (r'^\s*-?\d{1,2}\.?\d*,\s*-?\d{1,3}\.?\d*\s*$', details): #regex looks for lat/long in the format similar to 42.434546, -83.985195.
+    # look for lat/long coordinates in the location details. If provided,
+    # then channel location hints are not needed in the  maps query
+    # regex looks for lat/long in the format similar to 42.434546, -83.985195.
+    if re.match (r'^\s*-?\d{1,2}\.?\d*,\s*-?\d{1,3}\.?\d*\s*$', details):
         return "https://www.google.com/maps/search/?api=1&query={0}".format('+'.join(details_list))
     loc_list = guild_dict[channel.guild.id]['configure_dict'][report]['report_channels'][channel.id].split()
     return 'https://www.google.com/maps/search/?api=1&query={0}+{1}'.format('+'.join(details_list), '+'.join(loc_list))
@@ -411,7 +417,7 @@ async def autocorrect(entered_word, destination, author):
         else:
             return None
     else:
-        question = await destination.send(msg)
+        await destination.send(msg)
         return
 
 
@@ -440,31 +446,32 @@ def do_template(message, author, guild):
             member = guild.get_member_named(match)
             if match.isdigit() and (not member):
                 member = guild.get_member(match)
-            if (not member):
+            if not member:
                 not_found.append(full_match)
             return member.mention if member else full_match
         elif match_type == '#':
             channel = discord.utils.get(guild.text_channels, name=match)
             if match.isdigit() and (not channel):
                 channel = guild.get_channel(match)
-            if (not channel):
+            if not channel:
                 not_found.append(full_match)
             return channel.mention if channel else full_match
         elif match_type == '&':
             role = discord.utils.get(guild.roles, name=match)
             if match.isdigit() and (not role):
                 role = discord.utils.get(guild.roles, id=int(match))
-            if (not role):
+            if not role:
                 not_found.append(full_match)
             return role.mention if role else full_match
     template_pattern = '(?i){(@|#|&|<)([^{}]+)}|{(user|server)}|<*:([a-zA-Z0-9]+):[0-9]*>*'
     msg = re.sub(template_pattern, template_replace, message)
-    return (msg, not_found)
+    return msg, not_found
 
 
 async def ask(message, destination, user_list=None, *, react_list=['✅', '❎']):
     if user_list and type(user_list) != __builtins__.list:
         user_list = [user_list]
+
     def check(reaction, user):
         if user_list and type(user_list) is __builtins__.list:
             return (user.id in user_list) and (reaction.message.id == message.id) and (reaction.emoji in react_list)
@@ -547,16 +554,23 @@ def get_category(channel, level, category_type="raid"):
 
 def get_raidtext(type, pkmn, level, member, channel):
     if type == "raid":
-        roletest = ""
         role = discord.utils.get(channel.guild.roles, name=pkmn)
         if role:
             roletest = _("{pokemon} - ").format(pokemon=role.mention)
-            raidtext = _("{roletest}Meowth! {pkmn} raid reported by {member} in {channel}! Coordinate here!\n\nFor help, react to this message with the question mark and I will DM you a list of commands you can use!").format(roletest=roletest, pkmn=pkmn.title(), member=member.mention, channel=channel.mention)
+            raidtext = _("{roletest}Meowth! {pkmn} raid reported by {member} in {channel}! Coordinate here!\n\n"
+                         "For help, react to this message with the question mark and I will DM you a list of commands "
+                         "you can use!")\
+                .format(roletest=roletest, pkmn=pkmn.title(), member=member.mention, channel=channel.mention)
     elif type == "egg":
-        raidtext = _("Meowth! Level {level} raid egg reported by {member} in {channel}! Coordinate here!\n\nFor help, react to this message with the question mark and I will DM you a list of commands you can use!").format(level=level, member=member.mention, channel=channel.mention)
+        raidtext = _("Meowth! Level {level} raid egg reported by {member} in {channel}! Coordinate here!\n\nFor help, "
+                     "react to this message with the question mark and I will DM you a list of commands you can use!")\
+            .format(level=level, member=member.mention, channel=channel.mention)
     elif type == "exraid":
-        raidtext = _("Meowth! EX raid reported by {member} in {channel}! Coordinate here!\n\nFor help, react to this message with the question mark and I will DM you a list of commands you can use!").format(member=member.mention, channel=channel.mention)
+        raidtext = _("Meowth! EX raid reported by {member} in {channel}! Coordinate here!\n\nFor help, react to this "
+                     "message with the question mark and I will DM you a list of commands you can use!")\
+            .format(member=member.mention, channel=channel.mention)
     return raidtext
+
 
 # async def create_raid_channel(type, pkmn, level, details, report_channel):
 #     guild = report_channel.guild
@@ -605,7 +619,6 @@ def get_raidtext(type, pkmn, level, member, channel):
 @Meowth.command(hidden=True)
 async def template(ctx, *, sample_message):
     """Sample template messages to see how they would appear."""
-    embed = None
     (msg, errors) = do_template(sample_message, ctx.author, ctx.guild)
     if errors:
         if msg.startswith('[') and msg.endswith(']'):
@@ -636,9 +649,7 @@ async def wild_expiry_check(message):
     message = await message.channel.get_message(message.id)
     if message not in active_wilds:
         active_wilds.append(message)
-        logger.info(
-        'wild_expiry_check - Message added to watchlist - ' + message.channel.name
-        )
+        logger.info('wild_expiry_check - Message added to watchlist - ' + message.channel.name)
         await asyncio.sleep(0.5)
         while True:
             try:
@@ -655,7 +666,10 @@ async def expire_wild(message):
     channel = message.channel
     wild_dict = guild_dict[guild.id]['wildreport_dict']
     try:
-        await message.edit(embed=discord.Embed(description=guild_dict[guild.id]['wildreport_dict'][message.id]['expedit']['embedcontent'], colour=message.embeds[0].colour.value))
+        await message.edit(
+            embed=discord.Embed(
+                description=guild_dict[guild.id]['wildreport_dict'][message.id]['expedit']['embedcontent'],
+                colour=message.embeds[0].colour.value))
         await message.clear_reactions()
     except discord.errors.NotFound:
         pass
@@ -679,8 +693,9 @@ async def expiry_check(channel):
         await asyncio.sleep(0.5)
         while True:
             try:
-                if guild_dict[guild.id]['raidchannel_dict'][channel.id].get('meetup',{}):
-                    now = datetime.datetime.utcnow() + datetime.timedelta(hours=guild_dict[guild.id]['configure_dict']['settings']['offset'])
+                if guild_dict[guild.id]['raidchannel_dict'][channel.id].get('meetup', {}):
+                    now = datetime.datetime.utcnow() + \
+                          datetime.timedelta(hours=guild_dict[guild.id]['configure_dict']['settings']['offset'])
                     start = guild_dict[guild.id]['raidchannel_dict'][channel.id]['meetup'].get('start',False)
                     end = guild_dict[guild.id]['raidchannel_dict'][channel.id]['meetup'].get('end',False)
                     if start and guild_dict[guild.id]['raidchannel_dict'][channel.id]['type'] == 'egg':
@@ -692,10 +707,9 @@ async def expiry_check(channel):
                         try:
                             active_raids.remove(channel)
                         except ValueError:
-                            logger.info(
-                                'Expire_Channel - Channel Removal From Active Raid Failed - Not in List - ' + channel.name)
-                        logger.info(
-                            'Expire_Channel - Channel Expired And Removed From Watchlist - ' + channel.name)
+                            logger.info('Expire_Channel - Channel Removal From Active Raid Failed - Not in List - ' +
+                                        channel.name)
+                        logger.info('Expire_Channel - Channel Expired And Removed From Watchlist - ' + channel.name)
                         break
                 elif guild_dict[guild.id]['raidchannel_dict'][channel.id]['active']:
                     if guild_dict[guild.id]['raidchannel_dict'][channel.id]['exp']:
@@ -705,26 +719,27 @@ async def expiry_check(channel):
                                 egglevel = guild_dict[guild.id]['raidchannel_dict'][channel.id]['egglevel']
                                 if not pokemon and len(raid_info['raid_eggs'][egglevel]['pokemon']) == 1:
                                     pokemon = get_name(raid_info['raid_eggs'][egglevel]['pokemon'][0])
-                                elif not pokemon and egglevel == "5" and guild_dict[channel.guild.id]['configure_dict']['settings'].get('regional',None) in raid_info['raid_eggs']["5"]['pokemon']:
-                                    pokemon = get_name(guild_dict[channel.guild.id]['configure_dict']['settings']['regional'])
+                                elif not pokemon and egglevel == "5" and \
+                                        guild_dict[channel.guild.id]['configure_dict']['settings']\
+                                                .get('regional', None) in raid_info['raid_eggs']["5"]['pokemon']:
+                                    pokemon =\
+                                        get_name(guild_dict[channel.guild.id]['configure_dict']['settings']['regional'])
                                 if pokemon:
-                                    logger.info(
-                                        'Expire_Channel - Egg Auto Hatched - ' + channel.name)
+                                    logger.info('Expire_Channel - Egg Auto Hatched - ' + channel.name)
                                     try:
                                         active_raids.remove(channel)
                                     except ValueError:
-                                        logger.info(
-                                            'Expire_Channel - Channel Removal From Active Raid Failed - Not in List - ' + channel.name)
+                                        logger.info('Expire_Channel - Channel Removal From Active Raid Failed - Not in '
+                                                    'List - ' + channel.name)
                                     await _eggtoraid(pokemon.lower(), channel, author=None)
                                     break
                             event_loop.create_task(expire_channel(channel))
                             try:
                                 active_raids.remove(channel)
                             except ValueError:
-                                logger.info(
-                                    'Expire_Channel - Channel Removal From Active Raid Failed - Not in List - ' + channel.name)
-                            logger.info(
-                                'Expire_Channel - Channel Expired And Removed From Watchlist - ' + channel.name)
+                                logger.info('Expire_Channel - Channel Removal From Active Raid Failed - Not in List - '
+                                            + channel.name)
+                            logger.info('Expire_Channel - Channel Expired And Removed From Watchlist - ' + channel.name)
                             break
             except:
                 pass
@@ -741,15 +756,15 @@ async def expire_channel(channel):
     # else deleted the actual channel at some point.
     channel_exists = Meowth.get_channel(channel.id)
     channel = channel_exists
-    if (channel_exists == None) and (not Meowth.is_closed()):
+    if (channel_exists is None) and (not Meowth.is_closed()):
         try:
             del guild_dict[channel.guild.id]['raidchannel_dict'][channel.id]
         except KeyError:
             pass
         return
-    elif (channel_exists):
+    elif channel_exists:
         dupechannel = False
-        if guild_dict[guild.id]['raidchannel_dict'][channel.id]['active'] == False:
+        if guild_dict[guild.id]['raidchannel_dict'][channel.id]['active'] is False:
             alreadyexpired = True
         else:
             guild_dict[guild.id]['raidchannel_dict'][channel.id]['active'] = False
@@ -759,11 +774,14 @@ async def expire_channel(channel):
             dupechannel = True
             guild_dict[guild.id]['raidchannel_dict'][channel.id]['duplicate'] = 0
             guild_dict[guild.id]['raidchannel_dict'][channel.id]['exp'] = time.time()
-            if (not alreadyexpired):
-                await channel.send(_('This channel has been successfully reported as a duplicate and will be deleted in 1 minute. Check the channel list for the other raid channel to coordinate in!\nIf this was in error, reset the raid with **!timerset**'))
+            if not alreadyexpired:
+                await channel.send(_('This channel has been successfully reported as a duplicate and will be deleted in'
+                                     ' 1 minute. Check the channel list for the other raid channel to coordinate in!\n'
+                                     'If this was in error, reset the raid with **!timerset**'))
             delete_time = (guild_dict[guild.id]['raidchannel_dict'][channel.id]['exp'] + (1 * 60)) - time.time()
-        elif guild_dict[guild.id]['raidchannel_dict'][channel.id]['type'] == 'egg' and not guild_dict[guild.id]['raidchannel_dict'][channel.id].get('meetup',{}):
-            if (not alreadyexpired):
+        elif guild_dict[guild.id]['raidchannel_dict'][channel.id]['type'] == 'egg' and \
+                not guild_dict[guild.id]['raidchannel_dict'][channel.id].get('meetup', {}):
+            if not alreadyexpired:
                 pkmn = guild_dict[guild.id]['raidchannel_dict'][channel.id].get('pokemon', None)
                 if pkmn:
                     await _eggtoraid(pkmn, channel)
@@ -774,36 +792,48 @@ async def expire_channel(channel):
                 max_trainer_count = _count_trainers(trainer_dict)
                 h = _('🐣')
                 new_name = h if h not in channel.name else '🥚'
-                new_name += _('{egg_level}-').format(egg_level=guild_dict[guild.id]['raidchannel_dict'][channel.id]['egglevel'])
+                new_name += _('{egg_level}-').format(
+                    egg_level=guild_dict[guild.id]['raidchannel_dict'][channel.id]['egglevel'])
                 new_name += sanitize_channel_name(guild_dict[guild.id]['raidchannel_dict'][channel.id]['address'])
                 new_name = "{max_trainer_count}👤".format(max_trainer_count=max_trainer_count) + new_name
                 await channel.edit(name=new_name)
-                await channel.send(_("**This egg has hatched!**\n\n...or the time has just expired. Trainers {trainer_list}: Update the raid to the pokemon that hatched using **!raid <pokemon>** or reset the hatch timer with **!timerset**. This channel will be deactivated until I get an update and I'll delete it in 45 minutes if I don't hear anything.").format(trainer_list=', '.join(maybe_list)))
+                await channel.send(_("**This egg has hatched!**\n\n...or the time has just expired. Trainers {trainer_"
+                                     "list}: Update the raid to the pokemon that hatched using **!raid <pokemon>** or "
+                                     "reset the hatch timer with **!timerset**. This channel will be deactivated until "
+                                     "I get an update and I'll delete it in 45 minutes if I don't hear anything.")
+                                   .format(trainer_list=', '.join(maybe_list)))
             delete_time = (guild_dict[guild.id]['raidchannel_dict'][channel.id]['exp'] + (45 * 60)) - time.time()
             expiremsg = _('**This level {level} raid egg has expired!**').format(
                 level=guild_dict[channel.guild.id]['raidchannel_dict'][channel.id]['egglevel'])
         else:
-            if (not alreadyexpired):
+            if not alreadyexpired:
                 e = _('expired-')
                 new_name = e if e not in channel.name else ''
                 if guild_dict[guild.id]['raidchannel_dict'][channel.id]['type'] == 'egg':
-                    new_name += _('🐣{egg_level}-').format(egg_level=guild_dict[guild.id]['raidchannel_dict'][channel.id]['egglevel'])
+                    new_name += _('🐣{egg_level}-').format(
+                        egg_level=guild_dict[guild.id]['raidchannel_dict'][channel.id]['egglevel'])
                 else:
                     new_name += _('{}-').format(guild_dict[guild.id]['raidchannel_dict'][channel.id]['pokemon'])
                 new_name += sanitize_channel_name(guild_dict[guild.id]['raidchannel_dict'][channel.id]['address'])
                 await channel.edit(name=new_name)
-                await channel.send(_('This channel timer has expired! The channel has been deactivated and will be deleted in 5 minutes.\nTo reactivate the channel, use **!timerset** to set the timer again.'))
+                await channel.send(_('This channel timer has expired! The channel has been deactivated and will be'
+                                     'deleted in 5 minutes.\nTo reactivate the channel, use **!timerset** to set the'
+                                     'timer again.'))
             delete_time = (guild_dict[guild.id]['raidchannel_dict'][channel.id]['exp'] + (5 * 60)) - time.time()
-            raidtype = _("event") if guild_dict[guild.id]['raidchannel_dict'][channel.id].get('meetup',False) else _(" raid")
+            raidtype = _("event") if guild_dict[guild.id]['raidchannel_dict'][channel.id].get('meetup', False)\
+                else _(" raid")
             expiremsg = _('**This {pokemon}{raidtype} has expired!**').format(
-                pokemon=guild_dict[channel.guild.id]['raidchannel_dict'][channel.id]['pokemon'].capitalize(), raidtype=raidtype)
+                pokemon=guild_dict[channel.guild.id]['raidchannel_dict'][channel.id]['pokemon'].capitalize(),
+                raidtype=raidtype)
         await asyncio.sleep(delete_time)
         # If the channel has already been deleted from the dict, someone
         # else got to it before us, so don't do anything.
         # Also, if the channel got reactivated, don't do anything either.
         try:
-            if (guild_dict[channel.guild.id]['raidchannel_dict'][channel.id]['active'] == False) and (not Meowth.is_closed()):
-                for report_city, report_msg in guild_dict[guild.id]['raidchannel_dict'][channel.id]['reportcity'].items():
+            if (guild_dict[channel.guild.id]['raidchannel_dict'][channel.id]['active'] is False) and \
+                    (not Meowth.is_closed()):
+                for report_city, report_msg in \
+                        guild_dict[guild.id]['raidchannel_dict'][channel.id]['reportcity'].items():
                     if dupechannel:
                         try:
                             report_channel = Meowth.get_channel(report_city)
@@ -815,14 +845,15 @@ async def expire_channel(channel):
                         try:
                             report_channel = Meowth.get_channel(report_city)
                             reportmsg = await report_channel.get_message(report_msg)
-                            await reportmsg.edit(embed=discord.Embed(description=expiremsg, colour=channel.guild.me.colour))
+                            await reportmsg.edit(embed=discord.Embed(description=expiremsg,
+                                                                     colour=channel.guild.me.colour))
                         except:
                             pass
                     # channel doesn't exist anymore in serverdict
                 archive = guild_dict[guild.id]['raidchannel_dict'][channel.id].get('archive',False)
                 logs = guild_dict[channel.guild.id]['raidchannel_dict'][channel.id].get('logs', {})
                 channel_exists = Meowth.get_channel(channel.id)
-                if channel_exists == None:
+                if channel_exists is None:
                     return
                 elif not archive and not logs:
                     try:
@@ -840,10 +871,12 @@ async def expire_channel(channel):
                                     await channel.set_permissions(overwrite[0], read_messages=True)
                                     continue
                             elif isinstance(overwrite[0], discord.Member):
-                                if channel.permissions_for(overwrite[0]).manage_guild or channel.permissions_for(overwrite[0]).manage_channels:
+                                if channel.permissions_for(overwrite[0]).manage_guild or \
+                                        channel.permissions_for(overwrite[0]).manage_channels:
                                     await channel.set_permissions(overwrite[0], read_messages=True)
                                     continue
-                            if (overwrite[0].name not in guild.me.top_role.name) and (overwrite[0].name not in guild.me.name):
+                            if (overwrite[0].name not in guild.me.top_role.name) and \
+                                    (overwrite[0].name not in guild.me.name):
                                 await channel.set_permissions(overwrite[0], read_messages=False)
                         for role in guild.role_hierarchy:
                             if role.permissions.manage_guild or role.permissions.manage_channels:
@@ -861,14 +894,23 @@ async def expire_channel(channel):
                         else:
                             newcat = channel.guild.get_channel(category)
                         await channel.edit(name=new_name, category=newcat)
-                        await channel.send(_('-----------------------------------------------\n**The channel has been archived and removed from view for everybody but Meowth and those with Manage Channel permissions. Any messages that were deleted after the channel was marked for archival will be posted below. You will need to delete this channel manually.**\n-----------------------------------------------'))
+                        await channel.send(_('-----------------------------------------------\n**The channel has been '
+                                             'archived and removed from view for everybody but Meowth and those with '
+                                             'Manage Channel permissions. Any messages that were deleted after the '
+                                             'channel was marked for archival will be posted below. You will need to '
+                                             'delete this channel manually.**\n'
+                                             '-----------------------------------------------'))
                         while logs:
                             earliest = min(logs)
-                            embed = discord.Embed(colour=logs[earliest]['color_int'], description=logs[earliest]['content'], timestamp=logs[earliest]['created_at'])
+                            embed = discord.Embed(
+                                colour=logs[earliest]['color_int'],
+                                description=logs[earliest]['content'], timestamp=logs[earliest]['created_at'])
                             if logs[earliest]['author_nick']:
-                                embed.set_author(name="{name} [{nick}]".format(name=logs[earliest]['author_str'],nick=logs[earliest]['author_nick']), icon_url = logs[earliest]['author_avy'])
+                                embed.set_author(name="{name} [{nick}]".format(name=logs[earliest]['author_str'],
+                                                                               nick=logs[earliest]['author_nick']),
+                                                 icon_url=logs[earliest]['author_avy'])
                             else:
-                                embed.set_author(name=logs[earliest]['author_str'], icon_url = logs[earliest]['author_avy'])
+                                embed.set_author(name=logs[earliest]['author_str'], icon_url=logs[earliest]['author_avy'])
                             await channel.send(embed=embed)
                             del logs[earliest]
                             await asyncio.sleep(.25)
@@ -880,7 +922,7 @@ Meowth.expire_channel = expire_channel
 
 
 async def channel_cleanup(loop=True):
-    while (not Meowth.is_closed()):
+    while not Meowth.is_closed():
         global active_raids
         guilddict_chtemp = copy.deepcopy(guild_dict)
         logger.info('Channel_Cleanup ------ BEGIN ------')
@@ -889,7 +931,7 @@ async def channel_cleanup(loop=True):
             guild = Meowth.get_guild(guildid)
             log_str = 'Channel_Cleanup - Server: ' + str(guildid)
             log_str = log_str + ' - CHECKING FOR SERVER'
-            if guild == None:
+            if guild is None:
                 logger.info(log_str + ': NOT FOUND')
                 continue
             logger.info(((log_str + ' (') + guild.name) +
@@ -904,7 +946,7 @@ async def channel_cleanup(loop=True):
                 log_str = (log_str + ': Channel:') + str(channelid)
                 logger.info(log_str + ' - CHECKING')
                 channelmatch = Meowth.get_channel(channelid)
-                if channelmatch == None:
+                if channelmatch is None:
                     # list channel for deletion from save data
                     dict_channel_delete.append(channelid)
                     logger.info(log_str + " - DOESN'T EXIST IN DISCORD")
@@ -913,7 +955,7 @@ async def channel_cleanup(loop=True):
                     logger.info(
                         ((log_str + ' (') + channel.name) + ') - EXISTS IN DISCORD')
                     # if the channel save data shows it's not an active raid
-                    if guilddict_chtemp[guildid]['raidchannel_dict'][channelid]['active'] == False:
+                    if guilddict_chtemp[guildid]['raidchannel_dict'][channelid]['active'] is False:
                         if guilddict_chtemp[guildid]['raidchannel_dict'][channelid]['type'] == 'egg':
                             # and if it has been expired for longer than 45 minutes already
                             if guilddict_chtemp[guildid]['raidchannel_dict'][channelid]['exp'] < (time.time() - (45 * 60)):
@@ -926,9 +968,9 @@ async def channel_cleanup(loop=True):
                                 continue
                             # and if it has been expired for longer than 5 minutes already
                         elif guilddict_chtemp[guildid]['raidchannel_dict'][channelid]['exp'] < (time.time() - (5 * 60)):
-                                # list the channel to be removed from save data
+                            # list the channel to be removed from save data
                             dict_channel_delete.append(channelid)
-                                # and list the channel to be deleted in discord
+                            # and list the channel to be deleted in discord
                             discord_channel_delete.append(channel)
                             logger.info(
                                 log_str + ' - 5+ MIN EXPIRY NONACTIVE RAID')
@@ -938,7 +980,7 @@ async def channel_cleanup(loop=True):
                             log_str + ' - = RECENTLY EXPIRED NONACTIVE RAID')
                         continue
                     # if the channel save data shows it as an active raid still
-                    elif guilddict_chtemp[guildid]['raidchannel_dict'][channelid]['active'] == True:
+                    elif guilddict_chtemp[guildid]['raidchannel_dict'][channelid]['active'] is True:
                         # if it's an exraid
                         if guilddict_chtemp[guildid]['raidchannel_dict'][channelid]['type'] == 'exraid':
                             logger.info(log_str + ' - EXRAID')
@@ -990,7 +1032,7 @@ async def channel_cleanup(loop=True):
 
 
 async def guild_cleanup(loop=True):
-    while (not Meowth.is_closed()):
+    while not Meowth.is_closed():
         guilddict_srvtemp = copy.deepcopy(guild_dict)
         logger.info('Server_Cleanup ------ BEGIN ------')
         guilddict_srvtemp = guild_dict
@@ -1022,30 +1064,33 @@ async def guild_cleanup(loop=True):
 
 
 async def message_cleanup(loop=True):
-    while (not Meowth.is_closed()):
+    while not Meowth.is_closed():
         logger.info('message_cleanup ------ BEGIN ------')
         guilddict_temp = copy.deepcopy(guild_dict)
         for guildid in guilddict_temp.keys():
             questreport_dict = guilddict_temp[guildid].get('questreport_dict',{})
             wildreport_dict = guilddict_temp[guildid].get('wildreport_dict',{})
             report_dict_dict = {
-                'questreport_dict':questreport_dict,
-                'wildreport_dict':wildreport_dict,
+                'questreport_dict': questreport_dict,
+                'wildreport_dict': wildreport_dict,
             }
             report_edit_dict = {}
             report_delete_dict = {}
             for report_dict in report_dict_dict:
                 for reportid in report_dict_dict[report_dict].keys():
                     if report_dict_dict[report_dict][reportid].get('exp', 0) <= time.time():
-                        report_channel = Meowth.get_channel(report_dict_dict[report_dict][reportid].get('reportchannel'))
+                        report_channel =\
+                            Meowth.get_channel(report_dict_dict[report_dict][reportid].get('reportchannel'))
                         if report_channel:
-                            user_report = report_dict_dict[report_dict][reportid].get('reportmessage',None)
+                            user_report = report_dict_dict[report_dict][reportid].get('reportmessage', None)
                             if user_report:
-                                report_delete_dict[user_report] = {"action":"delete","channel":report_channel}
+                                report_delete_dict[user_report] = {"action": "delete", "channel": report_channel}
                             if report_dict_dict[report_dict][reportid].get('expedit') == "delete":
-                                report_delete_dict[reportid] = {"action":"delete","channel":report_channel}
+                                report_delete_dict[reportid] = {"action": "delete", "channel": report_channel}
                             else:
-                                report_edit_dict[reportid] = {"action":report_dict_dict[report_dict][reportid]['expedit'],"channel":report_channel}
+                                report_edit_dict[reportid] =\
+                                    {"action": report_dict_dict[report_dict][reportid]['expedit'],
+                                     "channel": report_channel}
                         try:
                             del guild_dict[guildid][report_dict][reportid]
                         except KeyError:
@@ -1059,9 +1104,16 @@ async def message_cleanup(loop=True):
             for messageid in report_edit_dict.keys():
                 try:
                     report_message = await report_edit_dict[messageid]['channel'].get_message(messageid)
-                    await report_message.edit(content=report_edit_dict[messageid]['action']['content'],embed=discord.Embed(description=report_edit_dict[messageid]['action'].get('embedcontent'), colour=report_message.embeds[0].colour.value))
+                    await report_message.edit(
+                        content=report_edit_dict[messageid]['action']['content'],
+                        embed=discord.Embed(description=report_edit_dict[messageid]['action'].get('embedcontent'),
+                                            colour=report_message.embeds[0].colour.value))
                     await report_message.clear_reactions()
-                except (discord.errors.NotFound, discord.errors.Forbidden, discord.errors.HTTPException, IndexError, KeyError):
+                except (discord.errors.NotFound,
+                        discord.errors.Forbidden,
+                        discord.errors.HTTPException,
+                        IndexError,
+                        KeyError):
                     pass
         # save server_dict changes after cleanup
         logger.info('message_cleanup - SAVING CHANGES')
@@ -1084,7 +1136,7 @@ async def _print(owner, message):
 
 async def maint_start():
     try:
-#        event_loop.create_task(guild_cleanup())
+        # event_loop.create_task(guild_cleanup())
         event_loop.create_task(channel_cleanup())
         event_loop.create_task(message_cleanup())
         logger.info('Maintenance Tasks Started')
@@ -1105,8 +1157,6 @@ async def on_ready():
         Meowth.get_all_members(), id=config['master'])
     await _print(Meowth.owner, _('Starting up...'))
     Meowth.uptime = datetime.datetime.now()
-    msg_success = 0
-    msg_fail = 0
     guilds = len(Meowth.guilds)
     users = 0
     for guild in Meowth.guilds:
@@ -1114,47 +1164,51 @@ async def on_ready():
         try:
             if guild.id not in guild_dict:
                 guild_dict[guild.id] = {
-                    'configure_dict':{
-                        'welcome': {'enabled':False,'welcomechan':'','welcomemsg':''},
-                        'want': {'enabled':False, 'report_channels': []},
-                        'raid': {'enabled':False, 'report_channels': {}, 'categories':'same','category_dict':{}},
-                        'exraid': {'enabled':False, 'report_channels': {}, 'categories':'same','category_dict':{}, 'permissions':'everyone'},
-                        'wild': {'enabled':False, 'report_channels': {}},
-                        'counters': {'enabled':False, 'auto_levels': []},
-                        'research': {'enabled':False, 'report_channels': {}},
-                        'archive': {'enabled':False, 'category':'same','list':None},
-                        'invite': {'enabled':False},
-                        'team':{'enabled':False},
-                        'settings':{'offset':0,'regional':None,'done':False,'prefix':None,'config_sessions':{}}
+                    'configure_dict': {
+                        'welcome': {'enabled': False, 'welcomechan': '', 'welcomemsg': ''},
+                        'want': {'enabled': False, 'report_channels': []},
+                        'raid': {'enabled': False, 'report_channels': {}, 'categories': 'same', 'category_dict': {}},
+                        'exraid': {'enabled': False, 'report_channels': {}, 'categories': 'same', 'category_dict': {},
+                                   'permissions': 'everyone'},
+                        'wild': {'enabled': False, 'report_channels': {}},
+                        'counters': {'enabled': False, 'auto_levels': []},
+                        'research': {'enabled': False, 'report_channels': {}},
+                        'archive': {'enabled': False, 'category': 'same', 'list': None},
+                        'invite': {'enabled': False},
+                        'team': {'enabled': False},
+                        'settings': {'offset': 0, 'regional': None, 'done': False, 'prefix': None,
+                                     'config_sessions': {}}
                     },
-                    'wildreport_dict:':{},
-                    'questreport_dict':{},
-                    'raidchannel_dict':{},
-                    'trainers':{}
+                    'wildreport_dict:': {},
+                    'questreport_dict': {},
+                    'raidchannel_dict': {},
+                    'trainers': {}
                 }
             else:
                 guild_dict[guild.id]['configure_dict'].setdefault('trade', {})
         except KeyError:
             guild_dict[guild.id] = {
-                'configure_dict':{
-                    'welcome': {'enabled':False,'welcomechan':'','welcomemsg':''},
-                    'want': {'enabled':False, 'report_channels': []},
-                    'raid': {'enabled':False, 'report_channels': {}, 'categories':'same','category_dict':{}},
-                    'exraid': {'enabled':False, 'report_channels': {}, 'categories':'same','category_dict':{}, 'permissions':'everyone'},
-                    'counters': {'enabled':False, 'auto_levels': []},
-                    'wild': {'enabled':False, 'report_channels': {}},
-                    'research': {'enabled':False, 'report_channels': {}},
-                    'archive': {'enabled':False, 'category':'same','list':None},
-                    'invite': {'enabled':False},
-                    'team':{'enabled':False},
-                    'settings':{'offset':0,'regional':None,'done':False,'prefix':None,'config_sessions':{}}
+                'configure_dict': {
+                    'welcome': {'enabled': False, 'welcomechan': '', 'welcomemsg': ''},
+                    'want': {'enabled': False, 'report_channels': []},
+                    'raid': {'enabled': False, 'report_channels': {}, 'categories': 'same', 'category_dict': {}},
+                    'exraid': {'enabled': False, 'report_channels': {}, 'categories': 'same', 'category_dict': {},
+                               'permissions': 'everyone'},
+                    'counters': {'enabled': False, 'auto_levels': []},
+                    'wild': {'enabled': False, 'report_channels': {}},
+                    'research': {'enabled': False, 'report_channels': {}},
+                    'archive': {'enabled': False, 'category': 'same', 'list': None},
+                    'invite': {'enabled': False},
+                    'team': {'enabled': False},
+                    'settings': {'offset': 0, 'regional': None, 'done': False, 'prefix': None, 'config_sessions': {}}
                 },
-                'wildreport_dict:':{},
-                'questreport_dict':{},
-                'raidchannel_dict':{},
-                'trainers':{}
+                'wildreport_dict:': {},
+                'questreport_dict': {},
+                'raidchannel_dict': {},
+                'trainers': {}
             }
-    await _print(Meowth.owner, _("Meowth! That's right!\n\n{server_count} servers connected.\n{member_count} members found.").format(server_count=guilds, member_count=users))
+    await _print(Meowth.owner, _("Meowth! That's right!\n\n{server_count} servers connected.\n{member_count} members "
+                                 "found.").format(server_count=guilds, member_count=users))
     await maint_start()
 
 
@@ -1181,7 +1235,9 @@ async def on_guild_join(guild):
         'trainers':{},
         'trade_dict': {}
     }
-    await owner.send(_("Meowth! I'm Meowth, a Discord helper bot for Pokemon Go communities, and someone has invited me to your server! Type **!help** to see a list of things I can do, and type **!configure** in any channel of your server to begin!"))
+    await owner.send(_("Meowth! I'm Meowth, a Discord helper bot for Pokemon Go communities, and someone has invited me"
+                       " to your server! Type **!help** to see a list of things I can do, and type **!configure** in "
+                       "any channel of your server to begin!"))
 
 
 @Meowth.event
@@ -1218,12 +1274,15 @@ async def on_member_join(member):
     if guild_dict[guild.id]['configure_dict']['welcome']['welcomechan'] == 'dm':
         send_to = member
     elif str(guild_dict[guild.id]['configure_dict']['welcome']['welcomechan']).isdigit():
-        send_to = discord.utils.get(guild.text_channels, id=int(guild_dict[guild.id]['configure_dict']['welcome']['welcomechan']))
+        send_to = discord.utils.get(guild.text_channels,
+                                    id=int(guild_dict[guild.id]['configure_dict']['welcome']['welcomechan']))
     else:
-        send_to = discord.utils.get(guild.text_channels, name=guild_dict[guild.id]['configure_dict']['welcome']['welcomechan'])
+        send_to = discord.utils.get(guild.text_channels,
+                                    name=guild_dict[guild.id]['configure_dict']['welcome']['welcomechan'])
     if send_to:
         if welcomemessage.startswith("[") and welcomemessage.endswith("]"):
-            await send_to.send(embed=discord.Embed(colour=guild.me.colour, description=welcomemessage[1:-1].format(server=guild.name, user=member.mention)))
+            await send_to.send(embed=discord.Embed(colour=guild.me.colour, description=welcomemessage[1:-1]
+                                                   .format(server=guild.name, user=member.mention)))
         else:
             await send_to.send(welcomemessage.format(server=guild.name, user=member.mention))
     else:
@@ -1232,10 +1291,11 @@ async def on_member_join(member):
 
 @Meowth.event
 async def on_message(message):
-    if message.guild != None:
+    if message.guild is not None:
         raid_status = guild_dict[message.guild.id]['raidchannel_dict'].get(message.channel.id, None)
         if raid_status:
-            if guild_dict[message.guild.id]['configure_dict'].get('archive', {}).get('enabled', False) and guild_dict[message.guild.id]['configure_dict'].get('archive', {}).get('list', []):
+            if guild_dict[message.guild.id]['configure_dict'].get('archive', {}).get('enabled', False)\
+                    and guild_dict[message.guild.id]['configure_dict'].get('archive', {}).get('list', []):
                 for phrase in guild_dict[message.guild.id]['configure_dict']['archive']['list']:
                     if phrase in message.content:
                         await _archive(message.channel)
@@ -1250,7 +1310,8 @@ async def on_message(message):
                     try:
                         if guild_dict[message.guild.id]['raidchannel_dict'][message.channel.id]['type'] == 'egg':
                             if guild_dict[message.guild.id]['raidchannel_dict'][message.channel.id]['pokemon'] == '':
-                                await message.channel.send(_("Meowth! Please wait until the raid egg has hatched before announcing you're coming or present."))
+                                await message.channel.send(_("Meowth! Please wait until the raid egg has hatched before"
+                                                             " announcing you're coming or present."))
                                 return
                     except:
                         pass
@@ -1262,7 +1323,8 @@ async def on_message(message):
                     try:
                         if guild_dict[message.guild.id]['raidchannel_dict'][message.channel.id]['type'] == 'egg':
                             if guild_dict[message.guild.id]['raidchannel_dict'][message.channel.id]['pokemon'] == '':
-                                await message.channel.send(_("Meowth! Please wait until the raid egg has hatched before announcing you're coming or present."))
+                                await message.channel.send(_("Meowth! Please wait until the raid egg has hatched before"
+                                                             " announcing you're coming or present."))
                                 return
                     except:
                         pass
@@ -1271,8 +1333,11 @@ async def on_message(message):
                     return
                 if "/maps" in message.content and "http" in message.content:
                     newcontent = message.content.replace("<","").replace(">","")
-                    newloc = create_gmaps_query(newcontent, message.channel, type=guild_dict[message.guild.id]['raidchannel_dict'][message.channel.id]['type'])
-                    oldraidmsg = await message.channel.get_message(guild_dict[message.guild.id]['raidchannel_dict'][message.channel.id]['raidmessage'])
+                    newloc = create_gmaps_query(
+                        newcontent, message.channel,
+                        type=guild_dict[message.guild.id]['raidchannel_dict'][message.channel.id]['type'])
+                    oldraidmsg = await message.channel.get_message(
+                        guild_dict[message.guild.id]['raidchannel_dict'][message.channel.id]['raidmessage'])
                     oldembed = oldraidmsg.embeds[0]
                     newembed = discord.Embed(title=oldembed.title, url=newloc, colour=message.guild.me.colour)
                     for field in oldembed.fields:
@@ -1283,11 +1348,13 @@ async def on_message(message):
                         await oldraidmsg.edit(new_content=oldraidmsg.content, embed=newembed, content=oldraidmsg.content)
                     except:
                         pass
-                    for report_city, report_msg in guild_dict[message.guild.id]['raidchannel_dict'][message.channel.id]['reportcity'].items():
+                    for report_city, report_msg in \
+                            guild_dict[message.guild.id]['raidchannel_dict'][message.channel.id]['reportcity'].items():
                         report_channel = Meowth.get_channel(report_city)
                         oldreportmsg = await report_channel.get_message(report_msg)
                         try:
-                             await oldreportmsg.edit(new_content=oldreportmsg.content, embed=newembed, content=oldreportmsg.content)
+                            await oldreportmsg.edit(
+                                new_content=oldreportmsg.content, embed=newembed, content=oldreportmsg.content)
                         except:
                             pass
                         guild_dict[message.guild.id]['raidchannel_dict'][message.channel.id]['reportcity'][report_city] = oldreportmsg.id
@@ -1298,9 +1365,12 @@ async def on_message(message):
                         if trainer_dict[trainer]['status']['coming']:
                             user = message.guild.get_member(trainer)
                             otw_list.append(user.mention)
-                    await message.channel.send(content=_('Meowth! Someone has suggested a different location for the raid! Trainers {trainer_list}: make sure you are headed to the right place!').format(trainer_list=', '.join(otw_list)), embed=newembed)
+                    await message.channel.send(content=_('Meowth! Someone has suggested a different location for the '
+                                                         'raid! Trainers {trainer_list}: make sure you are headed to '
+                                                         'the right place!')
+                                               .format(trainer_list=', '.join(otw_list)), embed=newembed)
                     return
-    if (not message.author.bot):
+    if not message.author.bot:
         await Meowth.process_commands(message)
 
 
@@ -1309,12 +1379,16 @@ async def on_message_delete(message):
     guild = message.guild
     channel = message.channel
     author = message.author
-    if channel.id in guild_dict[guild.id]['raidchannel_dict'] and guild_dict[guild.id]['configure_dict']['archive']['enabled']:
+    if channel.id in guild_dict[guild.id]['raidchannel_dict'] \
+            and guild_dict[guild.id]['configure_dict']['archive']['enabled']:
         if message.content.strip() == "!archive":
             guild_dict[guild.id]['raidchannel_dict'][channel.id]['archive'] = True
         if guild_dict[guild.id]['raidchannel_dict'][channel.id].get('archive', False):
             logs = guild_dict[guild.id]['raidchannel_dict'][channel.id].get('logs', {})
-            logs[message.id] = {'author_id': message.author.id, 'author_str': str(message.author),'author_avy':message.author.avatar_url,'author_nick':message.author.nick,'color_int':message.author.color.value,'content': message.clean_content,'created_at':message.created_at}
+            logs[message.id] = {'author_id': author.id, 'author_str': str(author),
+                                'author_avy': author.avatar_url, 'author_nick': author.nick,
+                                'color_int': author.color.value, 'content': message.clean_content,
+                                'created_at': message.created_at}
             guild_dict[guild.id]['raidchannel_dict'][channel.id]['logs'] = logs
 
 
@@ -1386,6 +1460,7 @@ async def _eval(ctx, *, body: str):
         'guild': ctx.guild,
         'message': ctx.message
     }
+
     def cleanup_code(content):
         """Automatically removes code blocks from the code."""
         # remove ```py\n```
@@ -1556,19 +1631,23 @@ def _set_regional(bot, guild, regional):
 
 @_set.command()
 @commands.has_permissions(manage_guild=True)
-async def timezone(ctx,*, timezone: str = ''):
+async def timezone(ctx, *, timezone: str = ''):
     """Changes server timezone."""
     try:
         timezone = float(timezone)
     except ValueError:
-        await ctx.channel.send(_("I couldn't convert your answer to an appropriate timezone! Please double check what you sent me and resend a number from **-12** to **12**."))
+        await ctx.channel.send(_("I couldn't convert your answer to an appropriate timezone! Please double check what "
+                                 "you sent me and resend a number from **-12** to **12**."))
         return
     if (not ((- 12) <= timezone <= 14)):
-        await ctx.channel.send(_("I couldn't convert your answer to an appropriate timezone! Please double check what you sent me and resend a number from **-12** to **12**."))
+        await ctx.channel.send(_("I couldn't convert your answer to an appropriate timezone! Please double check what "
+                                 "you sent me and resend a number from **-12** to **12**."))
         return
     _set_timezone(Meowth, ctx.guild, timezone)
-    now = datetime.datetime.utcnow() + datetime.timedelta(hours=guild_dict[ctx.channel.guild.id]['configure_dict']['settings']['offset'])
-    await ctx.channel.send(_("Timezone has been set to: `UTC{offset}`\nThe current time is **{now}**").format(offset=timezone,now=now.strftime("%H:%M")))
+    now = datetime.datetime.utcnow() + \
+          datetime.timedelta(hours=guild_dict[ctx.channel.guild.id]['configure_dict']['settings']['offset'])
+    await ctx.channel.send(_("Timezone has been set to: `UTC{offset}`\nThe current time is **{now}**")
+                           .format(offset=timezone,now=now.strftime("%H:%M")))
 
 
 def _set_timezone(bot, guild, timezone):
@@ -1583,7 +1662,7 @@ async def prefix(ctx, prefix=None):
         prefix = None
     prefix = prefix.strip()
     _set_prefix(Meowth, ctx.guild, prefix)
-    if prefix != None:
+    if prefix is not None:
         await ctx.channel.send(_('Prefix has been set to: `{}`').format(prefix))
     else:
         default_prefix = Meowth.config['default_prefix']
@@ -1661,9 +1740,8 @@ async def pokebattler(ctx, pbid: int = 0):
 @commands.has_permissions(manage_guild=True)
 async def _get(ctx):
     """Get a setting value"""
-    if ctx.invoked_subcommand == None:
+    if ctx.invoked_subcommand is None:
         raise commands.BadArgument()
-        return
 
 
 @_get.command()
@@ -1676,7 +1754,7 @@ async def prefix(ctx):
 
 @_get.command()
 @commands.has_permissions(manage_guild=True)
-async def perms(ctx, channel_id = None):
+async def perms(ctx, channel_id=None):
     """Show Meowth's permissions for the guild and channel."""
     channel = discord.utils.get(ctx.bot.get_all_channels(), id=channel_id)
     guild = channel.guild if channel else ctx.guild
@@ -1693,11 +1771,14 @@ async def perms(ctx, channel_id = None):
     if channel.category:
         names.append(wrap(channel.category.name))
     name_len = max(len(n) for n in names)
+
     def same_len(txt):
         return '\n'.join(txt + ([' '] * (name_len-len(txt))))
+
     names = [same_len(n) for n in names]
     chan_msg = [f"**{names[0]}** \n{channel.id} \n"]
     guild_msg = [f"**{names[1]}** \n{guild.id} \n"]
+
     def perms_result(perms):
         data = []
         meet_req = perms >= req_perms
@@ -1715,6 +1796,7 @@ async def perms(ctx, channel_id = None):
             meet_req_result = _("**ENABLED**")
             data.append(f"{meet_req_result} \n{true_perms_str} \n")
         return '\n'.join(data)
+
     guild_msg.append(perms_result(guild_perms))
     chan_msg.append(perms_result(chan_perms))
     embed.add_field(name=_('GUILD'), value='\n'.join(guild_msg))
@@ -1744,7 +1826,7 @@ async def welcome(ctx, user: discord.Member=None):
     """Test welcome on yourself or mentioned member.
 
     Usage: !welcome [@member]"""
-    if (not user):
+    if not user:
         user = ctx.author
     await on_member_join(user)
 
@@ -1767,20 +1849,22 @@ async def announce(ctx, *, announce=None):
     """Repeats your message in an embed from Meowth.
 
     Usage: !announce [announcement]
-    If the announcement isn't added at the same time as the command, Meowth will wait 3 minutes for a followup message containing the announcement."""
+    If the announcement isn't added at the same time as the command, Meowth will wait 3 minutes for a followup message
+    containing the announcement."""
     message = ctx.message
     channel = message.channel
     guild = message.guild
     author = message.author
-    if announce == None:
+    if announce is None:
         announcewait = await channel.send(_("I'll wait for your announcement!"))
         announcemsg = await Meowth.wait_for('message', timeout=180, check=(lambda reply: reply.author == message.author))
         await announcewait.delete()
-        if announcemsg != None:
+        if announcemsg is not None:
             announce = announcemsg.content
             await announcemsg.delete()
         else:
-            confirmation = await channel.send(_("Meowth! You took too long to send me your announcement! Retry when you're ready."))
+            confirmation =\
+                await channel.send(_("Meowth! You took too long to send me your announcement! Retry when you're ready."))
     embeddraft = discord.Embed(colour=guild.me.colour, description=announce)
     if ctx.invoked_with == "announce":
         title = _('Announcement')
@@ -1823,20 +1907,23 @@ async def announce(ctx, *, announce=None):
             confirmation = await channel.send(_('Announcement Sent.'))
         elif res.emoji == '❔':
             channelwait = await channel.send(_('What channel would you like me to send it to?'))
-            channelmsg = await Meowth.wait_for('message', timeout=60, check=(lambda reply: reply.author == message.author))
+            channelmsg = await Meowth.wait_for('message', timeout=60,
+                                               check=(lambda reply: reply.author == message.author))
             if channelmsg.content.isdigit():
                 sendchannel = Meowth.get_channel(int(channelmsg.content))
             elif channelmsg.raw_channel_mentions:
                 sendchannel = Meowth.get_channel(channelmsg.raw_channel_mentions[0])
             else:
                 sendchannel = discord.utils.get(guild.text_channels, name=channelmsg.content)
-            if (channelmsg != None) and (sendchannel != None):
-                announcement = await sendchannel.send(embed=embeddraft)
+            if (channelmsg is not None) and (sendchannel is not None):
+                # announcement = \
+                await sendchannel.send(embed=embeddraft)
                 confirmation = await channel.send(_('Announcement Sent.'))
-            elif sendchannel == None:
+            elif sendchannel is None:
                 confirmation = await channel.send(_("Meowth! That channel doesn't exist! Retry when you're ready."))
             else:
-                confirmation = await channel.send(_("Meowth! You took too long to send me your announcement! Retry when you're ready."))
+                confirmation = await channel.send(
+                    _("Meowth! You took too long to send me your announcement! Retry when you're ready."))
             await channelwait.delete()
             await channelmsg.delete()
             await draft.delete()
@@ -1844,9 +1931,7 @@ async def announce(ctx, *, announce=None):
             failed = 0
             sent = 0
             count = 0
-            recipients = {
-
-            }
+            recipients = {}
             embeddraft.set_footer(text=_('For support, contact us on our Discord server. Invite Code: hhVjAN8'))
             embeddraft.colour = discord.Colour.lighter_grey()
             for guild in Meowth.guilds:
@@ -1861,7 +1946,8 @@ async def announce(ctx, *, announce=None):
                     sent += 1
                 count += 1
             logger.info('Announcement sent to {} server owners: {} successful, {} failed.'.format(count, sent, failed))
-            confirmation = await channel.send(_('Announcement sent to {} server owners: {} successful, {} failed.').format(count, sent, failed))
+            confirmation = await channel.send(_('Announcement sent to {} server owners: {} successful, {} failed.')
+                                              .format(count, sent, failed))
         await asyncio.sleep(10)
         await confirmation.delete()
     else:
@@ -1893,7 +1979,8 @@ async def _configure(ctx, configlist):
         await ctx.message.delete()
     except (discord.errors.Forbidden, discord.errors.HTTPException):
         pass
-    config_sessions = guild_dict[ctx.guild.id]['configure_dict']['settings'].setdefault('config_sessions',{}).setdefault(owner.id,0) + 1
+    config_sessions = guild_dict[ctx.guild.id]['configure_dict']['settings']\
+        .setdefault('config_sessions', {}).setdefault(owner.id, 0) + 1
     guild_dict[ctx.guild.id]['configure_dict']['settings']['config_sessions'][owner.id] = config_sessions
     for session in guild_dict[guild.id]['configure_dict']['settings']['config_sessions'].keys():
         if not guild.get_member(session):
@@ -1901,7 +1988,7 @@ async def _configure(ctx, configlist):
                 del guild_dict[guild.id]['configure_dict']['settings']['config_sessions'][session]
             except KeyError:
                 pass
-    config_dict_temp = getattr(ctx, 'config_dict_temp',copy.deepcopy(guild_dict[guild.id]['configure_dict']))
+    config_dict_temp = getattr(ctx, 'config_dict_temp', copy.deepcopy(guild_dict[guild.id]['configure_dict']))
     firstconfig = False
     all_commands = [str(x) for x in config_dict_temp.keys()]
     enabled_commands = []
@@ -1912,32 +1999,61 @@ async def _configure(ctx, configlist):
     if configlist and not firstconfig:
         configlist = configlist.lower().replace("timezone","settings").split(",")
         configlist = [x.strip().lower() for x in configlist]
-        diff =  set(configlist) - set(all_commands)
+        diff = set(configlist) - set(all_commands)
         if diff and "all" in diff:
             configreplylist = all_commands
         elif not diff:
             configreplylist = configlist
         else:
-            await owner.send(embed=discord.Embed(colour=discord.Colour.orange(), description=_("I'm sorry, I couldn't understand some of what you entered. Let's just start here.")))
+            await owner.send(
+                embed=discord.Embed(
+                    colour=discord.Colour.orange(),
+                    description=_("I'm sorry, I couldn't understand some of what you entered. Let's just start here.")))
     if config_dict_temp['settings']['config_sessions'][owner.id] > 1:
-        await owner.send(embed=discord.Embed(colour=discord.Colour.orange(), description=_("**MULTIPLE SESSIONS!**\n\nIt looks like you have **{yoursessions}** active configure sessions. I recommend you send **cancel** first and then send your request again to avoid confusing me.\n\nYour Sessions: **{yoursessions}** | Total Sessions: **{allsessions}**").format(allsessions=sum(config_dict_temp['settings']['config_sessions'].values()),yoursessions=config_dict_temp['settings']['config_sessions'][owner.id])))
-    configmessage = _("Meowth! That's Right! Welcome to the configuration for Meowth the Pokemon Go Helper Bot! I will be guiding you through some steps to get me setup on your server.\n\n**Role Setup**\nBefore you begin the configuration, please make sure my role is moved to the top end of the server role hierarchy. It can be under admins and mods, but must be above team and general roles. [Here is an example](http://i.imgur.com/c5eaX1u.png)")
+        await owner.send(
+            embed=discord.Embed(
+                colour=discord.Colour.orange(),
+                description=_("**MULTIPLE SESSIONS!**\n\nIt looks like you have **{yoursessions}** active configure "
+                              "sessions. I recommend you send **cancel** first and then send your request again to "
+                              "avoid confusing me.\n\nYour Sessions: **{yoursessions}** | Total Sessions: "
+                              "**{allsessions}**")
+                .format(allsessions=sum(config_dict_temp['settings']['config_sessions'].values()),
+                        yoursessions=config_dict_temp['settings']['config_sessions'][owner.id])))
+    configmessage = _("Meowth! That's Right! Welcome to the configuration for Meowth the Pokemon Go Helper Bot! I will "
+                      "be guiding you through some steps to get me setup on your server.\n\n**Role Setup**\nBefore you "
+                      "begin the configuration, please make sure my role is moved to the top end of the server role "
+                      "hierarchy. It can be under admins and mods, but must be above team and general roles. [Here is "
+                      "an example](http://i.imgur.com/c5eaX1u.png)")
     if not firstconfig and not configreplylist:
-        configmessage += _("\n\n**Welcome Back**\nThis isn't your first time configuring. You can either reconfigure everything by replying with **all** or reply with a comma separated list to configure those commands. Example: `want, raid, wild`")
+        configmessage += _("\n\n**Welcome Back**\nThis isn't your first time configuring. You can either reconfigure "
+                           "everything by replying with **all** or reply with a comma separated list to configure those"
+                           " commands. Example: `want, raid, wild`")
         for commandconfig in config_dict_temp.keys():
-            if config_dict_temp[commandconfig].get('enabled',False):
+            if config_dict_temp[commandconfig].get('enabled', False):
                 enabled_commands.append(commandconfig)
-        configmessage += _("\n\n**Enabled Commands:**\n{enabled_commands}").format(enabled_commands=", ".join(enabled_commands))
-        configmessage += _("\n\n**All Commands:**\n**all** - To redo configuration\n**team** - For Team Assignment configuration\n**welcome** - For Welcome Message configuration\n**raid** - for raid command configuration\n**exraid** - for EX raid command configuration\n**invite** - for invite command configuration\n**counters** - for automatic counters configuration\n**wild** - for wild command configuration\n**research** - for !research command configuration\n**meetup** - for !meetup command configuration\n**want** - for want/unwant command configuration\n**archive** - For !archive configuration\n**trade** - For trade command configuration\n**timezone** - For timezone configuration")
-        configmessage += _('\n\nReply with **cancel** at any time throughout the questions to cancel the configure process.')
-        await owner.send(embed=discord.Embed(colour=discord.Colour.lighter_grey(), description=configmessage).set_author(name=_('Meowth Configuration - {guild}').format(guild=guild.name), icon_url=Meowth.user.avatar_url))
+        configmessage += _("\n\n**Enabled Commands:**\n{enabled_commands}")\
+            .format(enabled_commands=", ".join(enabled_commands))
+        configmessage += _("\n\n**All Commands:**\n**all** - To redo configuration\n**team** - For Team Assignment "
+                           "configuration\n**welcome** - For Welcome Message configuration\n**raid** - for raid command"
+                           " configuration\n**exraid** - for EX raid command configuration\n**invite** - for invite "
+                           "command configuration\n**counters** - for automatic counters configuration\n**wild** - for "
+                           "wild command configuration\n**research** - for !research command configuration\n**meetup** "
+                           "- for !meetup command configuration\n**want** - for want/unwant command configuration\n"
+                           "**archive** - For !archive configuration\n**trade** - For trade command configuration\n"
+                           "**timezone** - For timezone configuration\n\nReply with **cancel** at any time throughout "
+                           "the questions to cancel the configure process.")
+        await owner.send(embed=discord.Embed(colour=discord.Colour.lighter_grey(), description=configmessage)
+                         .set_author(name=_('Meowth Configuration - {guild}')
+                                     .format(guild=guild.name), icon_url=Meowth.user.avatar_url))
         while True:
             def check(m):
-                return m.guild == None and m.author == owner
+                return m.guild is None and m.author == owner
             configreply = await Meowth.wait_for('message', check=check)
             configreply.content = configreply.content.replace("timezone", "settings")
             if configreply.content.lower() == 'cancel':
-                await owner.send(embed=discord.Embed(colour=discord.Colour.red(), description=_('**CONFIG CANCELLED!**\n\nNo changes have been made.')))
+                await owner.send(embed=discord.Embed(
+                    colour=discord.Colour.red(),
+                    description=_('**CONFIG CANCELLED!**\n\nNo changes have been made.')))
                 try:
                     del guild_dict[guild.id]['configure_dict']['settings']['config_sessions'][owner.id]
                 except KeyError:
@@ -1954,13 +2070,21 @@ async def _configure(ctx, configlist):
                         config_error = True
                         break
             if config_error:
-                await owner.send(embed=discord.Embed(colour=discord.Colour.orange(), description=_("I'm sorry I don't understand. Please reply with the choices above.")))
+                await owner.send(
+                    embed=discord.Embed(
+                        colour=discord.Colour.orange(),
+                        description=_("I'm sorry I don't understand. Please reply with the choices above.")))
                 continue
             else:
                 break
-    elif firstconfig == True:
-        configmessage += _('\n\nReply with **cancel** at any time throughout the questions to cancel the configure process.')
-        await owner.send(embed=discord.Embed(colour=discord.Colour.lighter_grey(), description=configmessage).set_author(name=_('Meowth Configuration - {guild}').format(guild=guild.name), icon_url=Meowth.user.avatar_url))
+    elif firstconfig is True:
+        configmessage += _('\n\nReply with **cancel** at any time throughout the questions to cancel the configure '
+                           'process.')
+        await owner.send(
+            embed=discord.Embed(
+                colour=discord.Colour.lighter_grey(),
+                description=configmessage).set_author(name=_('Meowth Configuration - {guild}')
+                                                      .format(guild=guild.name), icon_url=Meowth.user.avatar_url))
         configreplylist = all_commands
     try:
         if "team" in configreplylist:
@@ -2019,7 +2143,12 @@ async def _configure(ctx, configlist):
         if ctx:
             ctx.config_dict_temp['settings']['done'] = True
             guild_dict[guild.id]['configure_dict'] = ctx.config_dict_temp
-            await owner.send(embed=discord.Embed(colour=discord.Colour.lighter_grey(), description=_("Meowth! Alright! Your settings have been saved and I'm ready to go! If you need to change any of these settings, just type **!configure** in your server again.")).set_author(name=_('Configuration Complete'), icon_url=Meowth.user.avatar_url))
+            await owner.send(
+                embed=discord.Embed(
+                    colour=discord.Colour.lighter_grey(),
+                    description=_("Meowth! Alright! Your settings have been saved and I'm ready to go! If you need to "
+                                  "change any of these settings, just type **!configure** in your server again."))
+                .set_author(name=_('Configuration Complete'), icon_url=Meowth.user.avatar_url))
         try:
             del guild_dict[guild.id]['configure_dict']['settings']['config_sessions'][owner.id]
         except KeyError:
@@ -3038,16 +3167,28 @@ async def _configure_meetup(ctx):
     owner = ctx.message.author
     config_dict_temp = getattr(ctx, 'config_dict_temp',copy.deepcopy(guild_dict[guild.id]['configure_dict']))
     config_dict_temp['meetup'] = {}
-    await owner.send(embed=discord.Embed(colour=discord.Colour.lighter_grey(), description=_("Meetup Reporting allows users to report meetups with **!meetup** or **!event**. Meetup reports are contained within one or more channels. Each channel will be able to represent different areas/communities. I'll need you to provide a list of channels in your server you will allow reports from in this format: `channel-name, channel-name, channel-name`\n\nExample: `kansas-city-meetups, hull-meetups, sydney-meetups`\n\nIf you do not require meetup reporting, you may want to disable this function.\n\nRespond with: **N** to disable, or the **channel-name** list to enable, each seperated with a comma and space:")).set_author(name=_('Meetup Reporting Channels'), icon_url=Meowth.user.avatar_url))
+    await owner.send(
+        embed=discord.Embed(
+            colour=discord.Colour.lighter_grey(),
+            description=_("Meetup Reporting allows users to report meetups with **!meetup** or **!event**. Meetup "
+                          "reports are contained within one or more channels. Each channel will be able to represent "
+                          "different areas/communities. I'll need you to provide a list of channels in your server you "
+                          "will allow reports from in this format: `channel-name, channel-name, channel-name`\n\n"
+                          "Example: `kansas-city-meetups, hull-meetups, sydney-meetups`\n\nIf you do not require meetup"
+                          " reporting, you may want to disable this function.\n\nRespond with: **N** to disable, or the"
+                          " **channel-name** list to enable, each seperated with a comma and space:"))
+            .set_author(name=_('Meetup Reporting Channels'), icon_url=Meowth.user.avatar_url))
     citychannel_dict = {}
     while True:
-        citychannels = await Meowth.wait_for('message', check=(lambda message: (message.guild == None) and message.author == owner))
+        citychannels = await Meowth.wait_for('message', check=(lambda message: (message.guild is None) and message.author == owner))
         if citychannels.content.lower() == 'n':
             config_dict_temp['meetup']['enabled'] = False
-            await owner.send(embed=discord.Embed(colour=discord.Colour.red(), description=_('Meetup Reporting disabled')))
+            await owner.send(embed=discord.Embed(colour=discord.Colour.red(),
+                                                 description=_('Meetup Reporting disabled')))
             break
         elif citychannels.content.lower() == 'cancel':
-            await owner.send(embed=discord.Embed(colour=discord.Colour.red(), description=_('**CONFIG CANCELLED!**\n\nNo changes have been made.')))
+            await owner.send(embed=discord.Embed(colour=discord.Colour.red(),
+                                                 description=_('**CONFIG CANCELLED!**\n\nNo changes have been made.')))
             return None
         else:
             config_dict_temp['meetup']['enabled'] = True
@@ -3065,7 +3206,7 @@ async def _configure_meetup(ctx):
                     channel = discord.utils.get(guild.text_channels, id=int(item))
                 if not channel:
                     item = re.sub('[^a-zA-Z0-9ąćęłńóśżźĄĆĘŁŃÓŚŻŹ _\\-]+', '', item)
-                    item = item.replace(" ","-")
+                    item = item.replace(" ", "-")
                     name = await letter_case(guild.text_channels, item.lower())
                     channel = discord.utils.get(guild.text_channels, name=name)
                 if channel:
@@ -3076,7 +3217,8 @@ async def _configure_meetup(ctx):
             citychannel_list = [x.id for x in citychannel_objs]
             diff = set(citychannel_list) - set(guild_channel_list)
             if (not diff) and (not citychannel_errors):
-                await owner.send(embed=discord.Embed(colour=discord.Colour.green(), description=_('Meetup Reporting Channels enabled')))
+                await owner.send(embed=discord.Embed(colour=discord.Colour.green(),
+                                                     description=_('Meetup Reporting Channels enabled')))
                 for channel in citychannel_objs:
                     ow = channel.overwrites_for(Meowth.user)
                     ow.send_messages = True
@@ -3085,18 +3227,47 @@ async def _configure_meetup(ctx):
                     try:
                         await channel.set_permissions(Meowth.user, overwrite = ow)
                     except (discord.errors.Forbidden, discord.errors.HTTPException, discord.errors.InvalidArgument):
-                        await owner.send(embed=discord.Embed(colour=discord.Colour.orange(), description=_('I couldn\'t set my own permissions in this channel. Please ensure I have the correct permissions in {channel} using **{prefix}get perms**.').format(prefix=ctx.prefix, channel=channel.mention)))
+                        await owner.send(
+                            embed=discord.Embed(
+                                colour=discord.Colour.orange(),
+                                description=_('I couldn\'t set my own permissions in this channel. Please ensure I have'
+                                              ' the correct permissions in {channel} using **{prefix}get perms**.')
+                                    .format(prefix=ctx.prefix, channel=channel.mention)))
                 break
             else:
-                await owner.send(embed=discord.Embed(colour=discord.Colour.orange(), description=_("The channel list you provided doesn't match with your servers channels.\n\nThe following aren't in your server: **{invalid_channels}**\n\nPlease double check your channel list and resend your reponse.").format(invalid_channels=', '.join(citychannel_errors))))
+                await owner.send(
+                    embed=discord.Embed(
+                        colour=discord.Colour.orange(),
+                        description=_("The channel list you provided doesn't match with your servers channels.\n\nThe "
+                                      "following aren't in your server: **{invalid_channels}**\n\nPlease double check "
+                                      "your channel list and resend your reponse.")
+                            .format(invalid_channels=', '.join(citychannel_errors))))
                 continue
     if config_dict_temp['meetup']['enabled']:
-        await owner.send(embed=discord.Embed(colour=discord.Colour.lighter_grey(), description=_('For each report, I generate Google Maps links to give people directions to meetups! To do this, I need to know which suburb/town/region each report channel represents, to ensure we get the right location in the map. For each report channel you provided, I will need its corresponding general location using only letters and spaces, with each location seperated by a comma and space.\n\nExample: `kansas city mo, hull uk, sydney nsw australia`\n\nEach location will have to be in the same order as you provided the channels in the previous question.\n\nRespond with: **location info, location info, location info** each matching the order of the previous channel list below.')).set_author(name=_('Meetup Reporting Locations'), icon_url=Meowth.user.avatar_url))
-        await owner.send(embed=discord.Embed(colour=discord.Colour.lighter_grey(), description=_('{citychannel_list}').format(citychannel_list=citychannels.content.lower()[:2000])).set_author(name=_('Entered Channels'), icon_url=Meowth.user.avatar_url))
+        await owner.send(
+            embed=discord.Embed(
+                colour=discord.Colour.lighter_grey(),
+                description=_('For each report, I generate Google Maps links to give people directions to meetups! To '
+                              'do this, I need to know which suburb/town/region each report channel represents, to '
+                              'ensure we get the right location in the map. For each report channel you provided, I '
+                              'will need its corresponding general location using only letters and spaces, with each '
+                              'location seperated by a comma and space.\n\nExample: `kansas city mo, hull uk, sydney '
+                              'nsw australia`\n\nEach location will have to be in the same order as you provided the '
+                              'channels in the previous question.\n\nRespond with: **location info, location info, '
+                              'location info** each matching the order of the previous channel list below.'))
+                .set_author(name=_('Meetup Reporting Locations'), icon_url=Meowth.user.avatar_url))
+        await owner.send(
+            embed=discord.Embed(
+                colour=discord.Colour.lighter_grey(),
+                description=_('{citychannel_list}').format(
+                    citychannel_list=citychannels.content.lower()[:2000]))
+                .set_author(name=_('Entered Channels'), icon_url=Meowth.user.avatar_url))
         while True:
             cities = await Meowth.wait_for('message', check=(lambda message: (message.guild == None) and message.author == owner))
             if cities.content.lower() == 'cancel':
-                await owner.send(embed=discord.Embed(colour=discord.Colour.red(), description=_('**CONFIG CANCELLED!**\n\nNo changes have been made.')))
+                await owner.send(
+                    embed=discord.Embed(colour=discord.Colour.red(),
+                                        description=_('**CONFIG CANCELLED!**\n\nNo changes have been made.')))
                 return None
             city_list = cities.content.split(',')
             city_list = [x.strip() for x in city_list]
@@ -3108,8 +3279,16 @@ async def _configure_meetup(ctx):
                 await owner.send(embed=discord.Embed(colour=discord.Colour.orange(), description=_("The number of cities doesn't match the number of channels you gave me earlier!\n\nI'll show you the two lists to compare:\n\n{channellist}\n{citylist}\n\nPlease double check that your locations match up with your provided channels and resend your response.").format(channellist=', '.join(citychannel_names), citylist=', '.join(city_list))))
                 continue
         config_dict_temp['meetup']['report_channels'] = citychannel_dict
-        await owner.send(embed=discord.Embed(colour=discord.Colour.green(), description=_('Meetup Reporting Locations are set')))
-        await owner.send(embed=discord.Embed(colour=discord.Colour.lighter_grey(), description=_("How would you like me to categorize the meetup channels I create? Your options are:\n\n**none** - If you don't want them categorized\n**same** - If you want them in the same category as the reporting channel\n**other** - If you want them categorized in a provided category name or ID")).set_author(name=_('Meetup Reporting Categories'), icon_url=Meowth.user.avatar_url))
+        await owner.send(embed=discord.Embed(colour=discord.Colour.green(),
+                                             description=_('Meetup Reporting Locations are set')))
+        await owner.send(
+            embed=discord.Embed(
+                colour=discord.Colour.lighter_grey(),
+                description=_("How would you like me to categorize the meetup channels I create? Your options are:\n\n"
+                              "**none** - If you don't want them categorized\n**same** - If you want them in the same "
+                              "category as the reporting channel\n**other** - If you want them categorized in a "
+                              "provided category name or ID"))
+                .set_author(name=_('Meetup Reporting Categories'), icon_url=Meowth.user.avatar_url))
         while True:
             guild = Meowth.get_guild(guild.id)
             guild_catlist = []
@@ -3118,7 +3297,10 @@ async def _configure_meetup(ctx):
             category_dict = {}
             categories = await Meowth.wait_for('message', check=lambda message: message.guild == None and message.author == owner)
             if categories.content.lower() == 'cancel':
-                await owner.send(embed=discord.Embed(colour=discord.Colour.red(), description=_('**CONFIG CANCELLED!**\n\nNo changes have been made.')))
+                await owner.send(
+                    embed=discord.Embed(
+                        colour=discord.Colour.red(),
+                        description=_('**CONFIG CANCELLED!**\n\nNo changes have been made.')))
                 return None
             elif categories.content.lower() == 'none':
                 config_dict_temp['meetup']['categories'] = None
@@ -3133,11 +3315,30 @@ async def _configure_meetup(ctx):
                     for cat in guild.categories:
                         guild_catlist.append(cat.id)
                     config_dict_temp['meetup']['categories'] = 'region'
-                    await owner.send(embed=discord.Embed(colour=discord.Colour.lighter_grey(),description=_("In the same order as they appear below, please give the names of the categories you would like raids reported in each channel to appear in. You do not need to use different categories for each channel, but they do need to be pre-existing categories. Separate each category name with a comma. Response can be either category name or ID.\n\nExample: `kansas city, hull, 1231231241561337813`\n\nYou have configured the following channels as meetup reporting channels.")).set_author(name=_('Meetup Reporting Categories'), icon_url=Meowth.user.avatar_url))
-                    await owner.send(embed=discord.Embed(colour=discord.Colour.lighter_grey(), description=_('{citychannel_list}').format(citychannel_list=citychannels.content.lower()[:2000])).set_author(name=_('Entered Channels'), icon_url=Meowth.user.avatar_url))
-                    regioncats = await Meowth.wait_for('message', check=lambda message: message.guild == None and message.author == owner)
+                    await owner.send(
+                        embed=discord.Embed(
+                            colour=discord.Colour.lighter_grey(),
+                            description=_("In the same order as they appear below, please give the names of the "
+                                          "categories you would like raids reported in each channel to appear in. You "
+                                          "do not need to use different categories for each channel, but they do need "
+                                          "to be pre-existing categories. Separate each category name with a comma. "
+                                          "Response can be either category name or ID.\n\nExample: `kansas city, hull, "
+                                          "1231231241561337813`\n\nYou have configured the following channels as meetup"
+                                          " reporting channels."))
+                            .set_author(name=_('Meetup Reporting Categories'), icon_url=Meowth.user.avatar_url))
+                    await owner.send(
+                        embed=discord.Embed(
+                            colour=discord.Colour.lighter_grey(),
+                            description=_('{citychannel_list}').format(
+                                citychannel_list=citychannels.content.lower()[:2000]))
+                            .set_author(name=_('Entered Channels'), icon_url=Meowth.user.avatar_url))
+                    regioncats = await Meowth.wait_for(
+                        'message', check=lambda message: message.guild is None and message.author == owner)
                     if regioncats.content.lower() == "cancel":
-                        await owner.send(embed=discord.Embed(colour=discord.Colour.red(), description=_('**CONFIG CANCELLED!**\n\nNo changes have been made.')))
+                        await owner.send(
+                            embed=discord.Embed(
+                                colour=discord.Colour.red(),
+                                description=_('**CONFIG CANCELLED!**\n\nNo changes have been made.')))
                         return None
                     regioncat_list = regioncats.content.split(',')
                     regioncat_list = [x.strip() for x in regioncat_list]
@@ -3166,19 +3367,30 @@ async def _configure_meetup(ctx):
                         else:
                             msg = _("The category list you provided doesn't match with your server's categories.")
                             if regioncat_errors:
-                                msg += _("\n\nThe following aren't in your server: **{invalid_categories}**").format(invalid_categories=', '.join(regioncat_errors))
-                            msg += _("\n\nPlease double check your category list and resend your response. If you just made these categories, try again.")
+                                msg += _("\n\nThe following aren't in your server: **{invalid_categories}**")\
+                                    .format(invalid_categories=', '.join(regioncat_errors))
+                            msg += _("\n\nPlease double check your category list and resend your response. If you just "
+                                     "made these categories, try again.")
                             await owner.send(embed=discord.Embed(colour=discord.Colour.orange(),description=msg))
                             continue
                     else:
-                        msg = _("The number of categories I found in your server doesn't match the number of channels you gave me earlier!\n\nI'll show you the two lists to compare:\n\n**Matched Channels:** {channellist}\n**Matched Categories:** {catlist}\n\nPlease double check that your categories match up with your provided channels and resend your response.").format(channellist=', '.join(citychannel_names), catlist=', '.join(regioncat_names) if len(regioncat_list)>0 else "None")
+                        msg = _("The number of categories I found in your server doesn't match the number of channels "
+                                "you gave me earlier!\n\nI'll show you the two lists to compare:\n\n**Matched "
+                                "Channels:** {channellist}\n**Matched Categories:** {catlist}\n\nPlease double check "
+                                "that your categories match up with your provided channels and resend your response.")\
+                            .format(channellist=', '.join(citychannel_names),
+                                    catlist=', '.join(regioncat_names) if len(regioncat_list) > 0 else "None")
                         if regioncat_errors:
-                            msg += _("\n\nThe following aren't in your server: **{invalid_categories}**").format(invalid_categories=', '.join(regioncat_errors))
+                            msg += _("\n\nThe following aren't in your server: **{invalid_categories}**").format(
+                                invalid_categories=', '.join(regioncat_errors))
                         await owner.send(embed=discord.Embed(colour=discord.Colour.orange(), description=msg))
                         continue
                     break
             else:
-                await owner.send(embed=discord.Embed(colour=discord.Colour.orange(),description=_("Sorry, I didn't understand your answer! Try again.")))
+                await owner.send(
+                    embed=discord.Embed(
+                        colour=discord.Colour.orange(),
+                        description=_("Sorry, I didn't understand your answer! Try again.")))
                 continue
             break
         await owner.send(embed=discord.Embed(colour=discord.Colour.green(), description=_('Meetup Categories are set')))
@@ -3199,14 +3411,28 @@ async def want(ctx):
     if not guild_dict[guild.id]['configure_dict']['settings']['done']:
         await _configure(ctx, "all")
         return
-    config_sessions = guild_dict[ctx.guild.id]['configure_dict']['settings'].setdefault('config_sessions',{}).setdefault(owner.id,0) + 1
+    config_sessions = guild_dict[ctx.guild.id]['configure_dict']['settings'].setdefault(
+        'config_sessions', {}).setdefault(owner.id, 0) + 1
     guild_dict[ctx.guild.id]['configure_dict']['settings']['config_sessions'][owner.id] = config_sessions
     if guild_dict[guild.id]['configure_dict']['settings']['config_sessions'][owner.id] > 1:
-        await owner.send(embed=discord.Embed(colour=discord.Colour.orange(), description=_("**MULTIPLE SESSIONS!**\n\nIt looks like you have **{yoursessions}** active configure sessions. I recommend you send **cancel** first and then send your request again to avoid confusing me.\n\nYour Sessions: **{yoursessions}** | Total Sessions: **{allsessions}**").format(allsessions=sum(guild_dict[guild.id]['configure_dict']['settings']['config_sessions'].values()),yoursessions=guild_dict[guild.id]['configure_dict']['settings']['config_sessions'][owner.id])))
+        await owner.send(
+            embed=discord.Embed(
+                colour=discord.Colour.orange(),
+                description=_("**MULTIPLE SESSIONS!**\n\nIt looks like you have **{yoursessions}** active configure "
+                              "sessions. I recommend you send **cancel** first and then send your request again to "
+                              "avoid confusing me.\n\nYour Sessions: **{yoursessions}** | Total Sessions: "
+                              "**{allsessions}**").format(
+                    allsessions=sum(guild_dict[guild.id]['configure_dict']['settings']['config_sessions'].values()),
+                    yoursessions=guild_dict[guild.id]['configure_dict']['settings']['config_sessions'][owner.id])))
     ctx = await _configure_want(ctx)
     if ctx:
         guild_dict[guild.id]['configure_dict'] = ctx.config_dict_temp
-        await owner.send(embed=discord.Embed(colour=discord.Colour.lighter_grey(), description=_("Meowth! Alright! Your settings have been saved and I'm ready to go! If you need to change any of these settings, just type **!configure** in your server again.")).set_author(name=_('Configuration Complete'), icon_url=Meowth.user.avatar_url))
+        await owner.send(
+            embed=discord.Embed(
+                colour=discord.Colour.lighter_grey(),
+                description=_("Meowth! Alright! Your settings have been saved and I'm ready to go! If you need to "
+                              "change any of these settings, just type **!configure** in your server again."))
+                .set_author(name=_('Configuration Complete'), icon_url=Meowth.user.avatar_url))
     try:
         del guild_dict[guild.id]['configure_dict']['settings']['config_sessions'][owner.id]
     except KeyError:
@@ -3217,15 +3443,27 @@ async def _configure_want(ctx):
     guild = ctx.message.guild
     owner = ctx.message.author
     config_dict_temp = getattr(ctx, 'config_dict_temp',copy.deepcopy(guild_dict[guild.id]['configure_dict']))
-    await owner.send(embed=discord.Embed(colour=discord.Colour.lighter_grey(), description=_("The **!want** and **!unwant** commands let you add or remove roles for Pokemon that will be mentioned in reports. This let you get notifications on the Pokemon you want to track. I just need to know what channels you want to allow people to manage their pokemon with the **!want** and **!unwant** command.\n\nIf you don't want to allow the management of tracked Pokemon roles, then you may want to disable this feature.\n\nRepond with: **N** to disable, or the **channel-name** list to enable, each seperated by a comma and space.")).set_author(name=_('Pokemon Notifications'), icon_url=Meowth.user.avatar_url))
+    await owner.send(
+        embed=discord.Embed(
+            colour=discord.Colour.lighter_grey(),
+            description=_("The **!want** and **!unwant** commands let you add or remove roles for Pokemon that will be "
+                          "mentioned in reports. This let you get notifications on the Pokemon you want to track. I "
+                          "just need to know what channels you want to allow people to manage their pokemon with the "
+                          "**!want** and **!unwant** command.\n\nIf you don't want to allow the management of tracked "
+                          "Pokemon roles, then you may want to disable this feature.\n\nRepond with: **N** to disable, "
+                          "or the **channel-name** list to enable, each seperated by a comma and space.")).set_author(
+            name=_('Pokemon Notifications'), icon_url=Meowth.user.avatar_url))
     while True:
-        wantchs = await Meowth.wait_for('message', check=(lambda message: (message.guild == None) and message.author == owner))
+        wantchs = await Meowth.wait_for('message',
+                                        check=(lambda message: (message.guild is None) and message.author == owner))
         if wantchs.content.lower() == 'n':
             config_dict_temp['want']['enabled'] = False
-            await owner.send(embed=discord.Embed(colour=discord.Colour.red(), description=_('Pokemon Notifications disabled')))
+            await owner.send(embed=discord.Embed(colour=discord.Colour.red(),
+                                                 description=_('Pokemon Notifications disabled')))
             break
         elif wantchs.content.lower() == 'cancel':
-            await owner.send(embed=discord.Embed(colour=discord.Colour.red(), description=_('**CONFIG CANCELLED!**\n\nNo changes have been made.')))
+            await owner.send(embed=discord.Embed(colour=discord.Colour.red(),
+                                                 description=_('**CONFIG CANCELLED!**\n\nNo changes have been made.')))
             return None
         else:
             want_list = wantchs.content.lower().split(',')
@@ -3263,11 +3501,23 @@ async def _configure_want(ctx):
                     try:
                         await channel.set_permissions(Meowth.user, overwrite = ow)
                     except (discord.errors.Forbidden, discord.errors.HTTPException, discord.errors.InvalidArgument):
-                        await owner.send(embed=discord.Embed(colour=discord.Colour.orange(), description=_('I couldn\'t set my own permissions in this channel. Please ensure I have the correct permissions in {channel} using **{prefix}get perms**.').format(prefix=ctx.prefix, channel=channel.mention)))
-                await owner.send(embed=discord.Embed(colour=discord.Colour.green(), description=_('Pokemon Notifications enabled')))
+                        await owner.send(
+                            embed=discord.Embed(
+                                colour=discord.Colour.orange(),
+                                description=_('I couldn\'t set my own permissions in this channel. Please ensure I have'
+                                              ' the correct permissions in {channel} using **{prefix}get perms**.')
+                                    .format(prefix=ctx.prefix, channel=channel.mention)))
+                await owner.send(embed=discord.Embed(colour=discord.Colour.green(),
+                                                     description=_('Pokemon Notifications enabled')))
                 break
             else:
-                await owner.send(embed=discord.Embed(colour=discord.Colour.orange(), description=_("The channel list you provided doesn't match with your servers channels.\n\nThe following aren't in your server: **{invalid_channels}**\n\nPlease double check your channel list and resend your reponse.").format(invalid_channels=', '.join(want_list_errors))))
+                await owner.send(
+                    embed=discord.Embed(
+                        colour=discord.Colour.orange(),
+                        description=_("The channel list you provided doesn't match with your servers channels.\n\nThe "
+                                      "following aren't in your server: **{invalid_channels}**\n\nPlease double check "
+                                      "your channel list and resend your reponse.").format(
+                            invalid_channels=', '.join(want_list_errors))))
                 continue
     ctx.config_dict_temp = config_dict_temp
     return ctx
@@ -3285,14 +3535,28 @@ async def archive(ctx):
     if not guild_dict[guild.id]['configure_dict']['settings']['done']:
         await _configure(ctx, "all")
         return
-    config_sessions = guild_dict[ctx.guild.id]['configure_dict']['settings'].setdefault('config_sessions',{}).setdefault(owner.id,0) + 1
+    config_sessions = guild_dict[ctx.guild.id]['configure_dict']['settings'].setdefault(
+        'config_sessions', {}).setdefault(owner.id, 0) + 1
     guild_dict[ctx.guild.id]['configure_dict']['settings']['config_sessions'][owner.id] = config_sessions
     if guild_dict[guild.id]['configure_dict']['settings']['config_sessions'][owner.id] > 1:
-        await owner.send(embed=discord.Embed(colour=discord.Colour.orange(), description=_("**MULTIPLE SESSIONS!**\n\nIt looks like you have **{yoursessions}** active configure sessions. I recommend you send **cancel** first and then send your request again to avoid confusing me.\n\nYour Sessions: **{yoursessions}** | Total Sessions: **{allsessions}**").format(allsessions=sum(guild_dict[guild.id]['configure_dict']['settings']['config_sessions'].values()),yoursessions=guild_dict[guild.id]['configure_dict']['settings']['config_sessions'][owner.id])))
+        await owner.send(
+            embed=discord.Embed(
+                colour=discord.Colour.orange(),
+                description=_("**MULTIPLE SESSIONS!**\n\nIt looks like you have **{yoursessions}** active configure "
+                              "sessions. I recommend you send **cancel** first and then send your request again to "
+                              "avoid confusing me.\n\nYour Sessions: **{yoursessions}** | Total Sessions: "
+                              "**{allsessions}**").format(
+                    allsessions=sum(guild_dict[guild.id]['configure_dict']['settings']['config_sessions'].values()),
+                    yoursessions=guild_dict[guild.id]['configure_dict']['settings']['config_sessions'][owner.id])))
     ctx = await _configure_archive(ctx)
     if ctx:
         guild_dict[guild.id]['configure_dict'] = ctx.config_dict_temp
-        await owner.send(embed=discord.Embed(colour=discord.Colour.lighter_grey(), description=_("Meowth! Alright! Your settings have been saved and I'm ready to go! If you need to change any of these settings, just type **!configure** in your server again.")).set_author(name=_('Configuration Complete'), icon_url=Meowth.user.avatar_url))
+        await owner.send(
+            embed=discord.Embed(
+                colour=discord.Colour.lighter_grey(),
+                description=_("Meowth! Alright! Your settings have been saved and I'm ready to go! If you need to "
+                              "change any of these settings, just type **!configure** in your server again."))
+                .set_author(name=_('Configuration Complete'), icon_url=Meowth.user.avatar_url))
     try:
         del guild_dict[guild.id]['configure_dict']['settings']['config_sessions'][owner.id]
     except KeyError:
@@ -3303,21 +3567,33 @@ async def _configure_archive(ctx):
     guild = ctx.message.guild
     owner = ctx.message.author
     config_dict_temp = getattr(ctx, 'config_dict_temp',copy.deepcopy(guild_dict[guild.id]['configure_dict']))
-    await owner.send(embed=discord.Embed(colour=discord.Colour.lighter_grey(), description=_("The **!archive** command marks temporary raid channels for archival rather than deletion. This can be useful for investigating potential violations of your server's rules in these channels.\n\nIf you would like to disable this feature, reply with **N**. Otherwise send the category you would like me to place archived channels in. You can say **same** to keep them in the same category, or type the name or ID of a category in your server.")).set_author(name=_('Archive Configuration'), icon_url=Meowth.user.avatar_url))
+    await owner.send(
+        embed=discord.Embed(
+            colour=discord.Colour.lighter_grey(),
+            description=_("The **!archive** command marks temporary raid channels for archival rather than deletion. "
+                          "This can be useful for investigating potential violations of your server's rules in these "
+                          "channels.\n\nIf you would like to disable this feature, reply with **N**. Otherwise send the"
+                          " category you would like me to place archived channels in. You can say **same** to keep them"
+                          " in the same category, or type the name or ID of a category in your server.")).set_author(
+            name=_('Archive Configuration'), icon_url=Meowth.user.avatar_url))
     config_dict_temp['archive'] = {}
     while True:
-        archivemsg = await Meowth.wait_for('message', check=(lambda message: (message.guild == None) and message.author == owner))
+        archivemsg = await Meowth.wait_for('message',
+                                           check=(lambda message: (message.guild is None) and message.author == owner))
         if archivemsg.content.lower() == 'cancel':
-            await owner.send(embed=discord.Embed(colour=discord.Colour.red(), description=_('**CONFIG CANCELLED!**\n\nNo changes have been made.')))
+            await owner.send(embed=discord.Embed(colour=discord.Colour.red(),
+                                                 description=_('**CONFIG CANCELLED!**\n\nNo changes have been made.')))
             return None
         if archivemsg.content.lower() == 'same':
             config_dict_temp['archive']['category'] = 'same'
             config_dict_temp['archive']['enabled'] = True
-            await owner.send(embed=discord.Embed(colour=discord.Colour.green(), description=_('Archived channels will remain in the same category.')))
+            await owner.send(embed=discord.Embed(colour=discord.Colour.green(),
+                                                 description=_('Archived channels will remain in the same category.')))
             break
         if archivemsg.content.lower() == 'n':
             config_dict_temp['archive']['enabled'] = False
-            await owner.send(embed=discord.Embed(colour=discord.Colour.red(), description=_('Archived Channels disabled.')))
+            await owner.send(embed=discord.Embed(colour=discord.Colour.red(),
+                                                 description=_('Archived Channels disabled.')))
             break
         else:
             item = archivemsg.content
@@ -3328,27 +3604,42 @@ async def _configure_archive(ctx):
                 name = await letter_case(guild.categories, item.lower())
                 category = discord.utils.get(guild.categories, name=name)
             if not category:
-                await owner.send(embed=discord.Embed(colour=discord.Colour.orange(), description=_("I couldn't find the category you replied with! Please reply with **same** to leave archived channels in the same category, or give the name or ID of an existing category.")))
+                await owner.send(
+                    embed=discord.Embed(
+                        colour=discord.Colour.orange(),description=_(
+                            "I couldn't find the category you replied with! Please reply with **same** to leave "
+                            "archived channels in the same category, or give the name or ID of an existing category.")))
                 continue
             config_dict_temp['archive']['category'] = category.id
             config_dict_temp['archive']['enabled'] = True
             await owner.send(embed=discord.Embed(colour=discord.Colour.green(), description=_('Archive category set.')))
             break
     if config_dict_temp['archive']['enabled']:
-        await owner.send(embed=discord.Embed(colour=discord.Colour.lighter_grey(), description=_("I can also listen in your raid channels for words or phrases that you want to trigger an automatic archival. For example, if discussion of spoofing is against your server rules, you might tell me to listen for the word 'spoofing'.\n\nReply with **none** to disable this feature, or reply with a comma separated list of phrases you want me to listen in raid channels for.")).set_author(name=_('Archive Configuration'), icon_url=Meowth.user.avatar_url))
-        phrasemsg = await Meowth.wait_for('message', check=(lambda message: (message.guild == None) and message.author == owner))
+        await owner.send(
+            embed=discord.Embed(
+                colour=discord.Colour.lighter_grey(),
+                description=_("I can also listen in your raid channels for words or phrases that you want to trigger an"
+                              " automatic archival. For example, if discussion of spoofing is against your server"
+                              " rules, you might tell me to listen for the word 'spoofing'.\n\nReply with **none** to"
+                              " disable this feature, or reply with a comma separated list of phrases you want me to"
+                              " listen in raid channels for.")).set_author(
+                name=_('Archive Configuration'), icon_url=Meowth.user.avatar_url))
+        phrasemsg = await Meowth.wait_for('message',
+                                          check=(lambda message: (message.guild is None) and message.author == owner))
         if phrasemsg.content.lower() == 'none':
             config_dict_temp['archive']['list'] = None
             await owner.send(embed=discord.Embed(colour=discord.Colour.red(), description=_('Phrase list disabled.')))
         elif phrasemsg.content.lower() == 'cancel':
-            await owner.send(embed=discord.Embed(colour=discord.Colour.red(), description=_('**CONFIG CANCELLED!**\n\nNo changes have been made.')))
+            await owner.send(embed=discord.Embed(colour=discord.Colour.red(),
+                                                 description=_('**CONFIG CANCELLED!**\n\nNo changes have been made.')))
             return None
         else:
             phrase_list = phrasemsg.content.lower().split(",")
             for i in range(len(phrase_list)):
                 phrase_list[i] = phrase_list[i].strip()
             config_dict_temp['archive']['list'] = phrase_list
-            await owner.send(embed=discord.Embed(colour=discord.Colour.green(), description=_('Archive Phrase list set.')))
+            await owner.send(embed=discord.Embed(colour=discord.Colour.green(),
+                                                 description=_('Archive Phrase list set.')))
     ctx.config_dict_temp = config_dict_temp
     return ctx
 
@@ -4602,6 +4893,8 @@ def _is_raid_duplicate(guild, gym_name, gym_dict):
         if channel_to_check is None:
             continue
         if gym_dict[channel_id]['type'] != 'egg' and gym_dict[channel_id]['type'] != 'raid':
+            continue
+        if gym_dict[channel_id]['egglevel'] == 'EX':
             continue
         if gym_dict[channel_id]['address'] == gym_name:
             return channel_to_check.mention
