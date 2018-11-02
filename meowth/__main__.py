@@ -4599,7 +4599,7 @@ async def _wild(message, content):
 
 @Meowth.command(aliases=['e', 'raidegg'])
 @checks.allowraidreport()
-async def egg(ctx, egg_level, *, raid_location:commands.clean_content(fix_channel_mentions=True), raid_timer):
+async def egg(ctx, egg_level, *, raid_location: commands.clean_content(fix_channel_mentions=True)=""):
     """Report a raid egg.
 
     Usage: !egg level location minutes
@@ -4607,21 +4607,30 @@ async def egg(ctx, egg_level, *, raid_location:commands.clean_content(fix_channe
     attach the link to the google maps to the raid report.
     Finally, Meowth will create a separate channel for the raid report, for the purposes of organizing the raid."""
 
-    content = f"{pokemon} {location}"
+    raid_timer = ""
+    try:
+        if raid_location.split(' ')[-1].isdigit():
+            raid_timer = raid_location.split(' ')[-1]
+            raid_location = raid_location.split(' ')[:-1]
+    except ValueError:
+        pass
+
+    logger.info(f'egg command(ctx, egg_level={egg_level}, raid_location={raid_location}, raid_timer={raid_timer}')
+
     if egg_level.isdigit():
-        new_channel = await _raidegg(ctx, content)
+        new_channel = await _raidegg(ctx, egg_level, raid_location, raid_timer)
     else:
         await ctx.message.channel.send(
             _('Do zgłaszania aktywnych (wyklutych) rajdów użyj komendy: '
-              '**!raid** ***nazwa_pokemona lokalizacja minuty_do_końca_rajdu***\n'
+              '``!raid nazwa_pokemona nazwa_gymu minuty_do_końca_rajdu```\n'
               'W niedługim czasie komenda !egg nie będzie przyjmować takich zgłoszeń.'))
-        new_channel = await _raid(ctx, content)
+        new_channel = await _raid(ctx, egg_level, raid_location, raid_timer)
     ctx.raid_channel = new_channel
 
 
 @Meowth.command(aliases=['r'])
 @checks.allowraidreport()
-async def raid(ctx, pokemon, *, raid_location:commands.clean_content(fix_channel_mentions=True)="", raid_timer=""):
+async def raid(ctx, pokemon, *, raid_location: commands.clean_content(fix_channel_mentions=True)=""):
     """Report an ongoing raid.
 
     Usage: !raid pokemon location minutes
@@ -4629,123 +4638,74 @@ async def raid(ctx, pokemon, *, raid_location:commands.clean_content(fix_channel
     attach the link to the google maps to the raid report.
     Finally, Meowth will create a separate channel for the raid report, for the purposes of organizing the raid."""
 
-    is_from_egg = False
-    if guild_dict[ctx.message.channel.guild.id]['raidchannel_dict'].get(message.channel.id, {}).get('type') == "egg":
-        is_from_egg = True
+    raid_timer = ""
+    try:
+        if raid_location.split(' ')[-1].isdigit():
+            raid_timer = raid_location.split(' ')[-1]
+            raid_location = raid_location.split(' ')[:-1]
+    except ValueError:
+        pass
 
-    if not is_from_egg:
-        if raid_location == "" or raid_timer == "":
-            await ctx.message.channel.send(
-                _('Podaj więcej danych zgłaszając rajd: '
-                  '**!raid** ***nazwa_pokemona lokalizacja minuty_do_końca_rajdu***'))
-            return
+    logger.info(f'raid command(ctx, pokemon={pokemon}, raid_location={raid_location}, raid_timer={raid_timer}')
 
-    content = f"{pokemon} {location}"
+    if guild_dict[ctx.message.channel.guild.id]['raidchannel_dict'].get(ctx.message.channel.id, {}).get('type') == "egg":
+        await _eggtoraid(pokemon, ctx.message.channel, ctx.message.author)
+        return
+
+    if raid_location == "" or raid_timer == "":
+        await ctx.message.channel.send(
+            _('Podaj więcej danych zgłaszając rajd: '
+              '```!raid nazwa_pokemona nazwa_gymu minuty_do_końca_rajdu```'))
+        return
+
     if pokemon.isdigit():
         await ctx.message.channel.send(
             _('Do zgłaszania niewyklutych rajdów używaj komendy: '
-              '**!egg** ***poziom_rajdu lokalizacja minuty_do_wyklucia***\n'
+              '```!egg poziom_rajdu nazwa_gymu minuty_do_wyklucia```\n'
               'W niedługim czasie komenda !raid nie będzie przyjmować takich zgłoszeń.'))
-        new_channel = await _raidegg(ctx, content)
+        new_channel = await _raidegg(ctx, pokemon, raid_location, raid_timer)
     else:
-        new_channel = await _raid(ctx, content)
+        new_channel = await _raid(ctx, pokemon, raid_location, raid_timer)
     ctx.raid_channel = new_channel
 
 
-async def _raid(ctx, content):
+async def _raid(ctx, pokemon, raid_location, raid_timer):
     message = ctx.message
-    fromegg = False
-    if guild_dict[message.channel.guild.id]['raidchannel_dict'].get(message.channel.id,{}).get('type') == "egg":
-        fromegg = True
     timestamp = (message.created_at + datetime.timedelta(hours=guild_dict[message.channel.guild.id]['configure_dict']['settings']['offset'])).strftime(_('%I:%M %p (%H:%M)'))
-    raid_split = content.split()
-    if len(raid_split) == 0:
-        await message.channel.send(_('Meowth! Give more details when reporting! Usage: **!raid <pokemon name> <location>**'))
-        return
-    if raid_split[0] == 'egg':
-        await _raidegg(ctx, content)
-        return
-    if fromegg == True:
-        eggdetails = guild_dict[message.guild.id]['raidchannel_dict'][message.channel.id]
-        egglevel = eggdetails['egglevel']
-        if raid_split[0].lower() == 'assume':
-            if config['allow_assume'][egglevel] == 'False':
-                await message.channel.send(_('Meowth! **!raid assume** is not allowed in this level egg.'))
-                return
-            if guild_dict[message.channel.guild.id]['raidchannel_dict'][message.channel.id]['active'] == False:
-                await _eggtoraid(raid_split[1].lower(), message.channel, message.author)
-                return
-            else:
-                await _eggassume(" ".join(raid_split), message.channel, message.author)
-                return
-        elif guild_dict[message.channel.guild.id]['raidchannel_dict'][message.channel.id]['active'] == False:
-            await _eggtoraid(" ".join(raid_split).lower(), message.channel, message.author)
-            return
-        else:
-            await message.channel.send(_('Meowth! Please wait until the egg has hatched before changing it to an open raid!'))
-            return
-    entered_raid = re.sub('[\\@]', '', raid_split[0].lower())
-    entered_raid = get_name(entered_raid).lower() if entered_raid.isdigit() else entered_raid.lower()
-    del raid_split[0]
-    if len(raid_split) == 0:
-        await message.channel.send(_('Meowth! Give more details when reporting! Usage: **!raid <pokemon name> <location>**'))
-        return
-    if raid_split[(- 1)].isdigit():
-        raidexp = int(raid_split[(- 1)])
-        del raid_split[(- 1)]
-    elif ':' in raid_split[(- 1)]:
-        raid_split[(- 1)] = re.sub('[a-zA-Z]', '', raid_split[(- 1)])
-        if raid_split[(- 1)].split(':')[0] == '':
-            endhours = 0
-        else:
-            endhours = int(raid_split[(- 1)].split(':')[0])
-        if raid_split[(- 1)].split(':')[1] == '':
-            endmins = 0
-        else:
-            endmins = int(raid_split[(- 1)].split(':')[1])
-        raidexp = (60 * endhours) + endmins
-        del raid_split[(- 1)]
-    else:
-        raidexp = False
+
     rgx = '[^a-zA-Z0-9]'
-    pkmn_match = next((p for p in pkmn_info['pokemon_list'] if re.sub(rgx, '', p) == re.sub(rgx, '', entered_raid)), None)
+    pkmn_match = next((p for p in pkmn_info['pokemon_list'] if re.sub(rgx, '', p) == re.sub(rgx, '', pokemon)), None)
     if pkmn_match:
-        entered_raid = pkmn_match
+        pokemon = pkmn_match
     else:
-        entered_raid = await autocorrect(entered_raid, message.channel, message.author)
-    if not entered_raid:
+        pokemon = await autocorrect(pokemon, message.channel, message.author)
+    if not pokemon:
         return
-    raid_match = True if entered_raid in get_raidlist() else False
-    if (not raid_match):
-        await message.channel.send(_('Meowth! The Pokemon {pokemon} does not appear in raids!').format(pokemon=entered_raid.capitalize()))
+
+    if pokemon not in get_raidlist():
+        await message.channel.send(_('Meowth! The Pokemon {pokemon} does not appear in raids!').format(
+            pokemon=pokemon.capitalize()))
         return
-    elif get_raid_level(entered_raid) == "EX":
-        await message.channel.send(_("Meowth! The Pokemon {pokemon} only appears in EX Raids! Use **!exraid** to report one!").format(pokemon=entered_raid.capitalize()))
+    elif get_raid_level(pokemon) == "EX":
+        await message.channel.send(
+            _("Meowth! The Pokemon {pokemon} only appears in EX Raids! Use **!exraid** to report one!").format(
+                pokemon=pokemon.capitalize()))
         return
-    if raidexp is not False:
-        if _timercheck(raidexp, raid_info['raid_eggs'][get_raid_level(entered_raid)]['raidtime']):
-            await message.channel.send(_("Meowth...that's too long. Level {raidlevel} raids currently last no more than {raidtime} minutes...").format(raidlevel=get_raid_level(entered_raid), raidtime=raid_info['raid_eggs'][get_raid_level(entered_raid)]['raidtime']))
-            return
-    raid_details = ' '.join(raid_split)
-    raid_details = raid_details.strip()
-    if raid_details == '':
-        await message.channel.send(_('Meowth! Give more details when reporting! Usage: **!raid <pokemon name> <location>**'))
+
+    if _timercheck(raid_timer, raid_info['raid_eggs'][get_raid_level(pokemon)]['raidtime']):
+        await message.channel.send(
+            _("Coś mieszasz. Rajdy poziomu {raidlevel} trwają maksymalnie {raidtime} minut...").format(
+                raidlevel=get_raid_level(pokemon),
+                raidtime=raid_info['raid_eggs'][get_raid_level(pokemon)]['raidtime']))
         return
-    weather_list = [_('none'), _('extreme'), _('clear'), _('sunny'), _('rainy'),
-                    _('partlycloudy'), _('cloudy'), _('windy'), _('snow'), _('fog')]
-    weather = next((w for w in weather_list if re.sub(rgx, '', w) in re.sub(rgx, '', raid_details.lower())), None)
-    if not weather:
-        weather = guild_dict[message.guild.id]['raidchannel_dict'].get(message.channel.id,{}).get('weather', None)
-    raid_details = raid_details.replace(str(weather), '', 1)
-    if raid_details == '':
-        await message.channel.send(_('Meowth! Give more details when reporting! Usage: **!raid <pokemon name> <location>**'))
-        return
+
+    weather = guild_dict[message.guild.id]['raidchannel_dict'].get(message.channel.id, {}).get('weather', None)
     gyms = get_gyms(message.guild.id)
     if gyms:
         gym_matching_cog = Meowth.cogs.get('GymMatching')
-        match, districts = await gym_matching_cog.pick_gym_prompt(ctx, raid_details)
+        match, districts = await gym_matching_cog.pick_gym_prompt(ctx, raid_location)
         if not match:
-            return await message.channel.send(f"Nie znaleziono żadnego gymu pasującego do \"{raid_details}\".")
+            return await message.channel.send(f"Nie znaleziono żadnego gymu pasującego do \"{raid_location}\".")
         if match == "__TIMEOUT__":
             return await message.channel.send(f"Za wolno... spróbuj jeszcze raz.")
         gym = gyms[match]
@@ -4753,60 +4713,81 @@ async def _raid(ctx, content):
         gym_coords = gym['coordinates']
         gym_type = gym_matching_cog.get_gym_status(gym)
         raid_gmaps_link = create_gmaps_query(gym_coords, message.channel, type="raid")
-    else:
-        raid_gmaps_link = create_gmaps_query(raid_details, message.channel, type="raid")
-    if not fromegg:
         is_duplicate = _is_raid_duplicate(message.guild, raid_details, guild_dict[message.guild.id]['raidchannel_dict'])
         if is_duplicate is not None:
             await message.channel.send(
-                _('Meowth! To zgłoszenie wygląda na duplikat. Sprawdź czy ktoś już nie zgłosił tego rajdu tu: {}'.format(is_duplicate)))
+                _('Meowth! To zgłoszenie wygląda na duplikat. '
+                  'Sprawdź czy ktoś już nie zgłosił tego rajdu tu: {}'.format(is_duplicate)))
             return
-    raid_channel_name = "0👤" + (entered_raid + '-') + sanitize_channel_name(raid_details)
-    raid_channel_category = get_category(message.channel, get_raid_level(entered_raid), category_type="raid")
-    raid_channel = await message.guild.create_text_channel(raid_channel_name, overwrites=dict(message.channel.overwrites), category=raid_channel_category)
+    else:
+        raid_gmaps_link = create_gmaps_query(raid_location, message.channel, type="raid")
+    raid_channel_name = "0👤" + (pokemon + '-') + sanitize_channel_name(raid_details)
+    raid_channel_category = get_category(message.channel, get_raid_level(pokemon), category_type="raid")
+    raid_channel = await message.guild.create_text_channel(
+        raid_channel_name, overwrites=dict(message.channel.overwrites), category=raid_channel_category)
     ow = raid_channel.overwrites_for(raid_channel.guild.default_role)
     ow.send_messages = True
     try:
         await raid_channel.set_permissions(raid_channel.guild.default_role, overwrite = ow)
     except (discord.errors.Forbidden, discord.errors.HTTPException, discord.errors.InvalidArgument):
         pass
-    raid = discord.utils.get(message.guild.roles, name=entered_raid)
-    if raid == None:
+    raid = discord.utils.get(message.guild.roles, name=pokemon)
+    if raid is None:
         roletest = ""
     else:
         roletest = _("{pokemon} - ").format(pokemon=raid.mention)
-    raid_number = pkmn_info['pokemon_list'].index(entered_raid) + 1
+    raid_number = pkmn_info['pokemon_list'].index(pokemon) + 1
     raid_img_url = 'https://raw.githubusercontent.com/FoglyOgly/Meowth/discordpy-v1/images/pkmn/{0}_.png?cache=0'.format(str(raid_number).zfill(3))
-    raid_embed = discord.Embed(title=_('Meowth! Click here for directions to the raid!'), url=raid_gmaps_link, colour=message.guild.me.colour)
+    raid_embed = discord.Embed(
+        title=_('Meowth! Click here for directions to the raid!'), url=raid_gmaps_link, colour=message.guild.me.colour)
     if gyms:
         gym_info = _("**Nazwa:** {0}\n**Typ gymu:** {1}").format(raid_details, gym_type)
         raid_embed.add_field(name=_('**Gym:**'), value=gym_info, inline=False)
-    raid_embed.add_field(name=_('**Details:**'), value=_('{pokemon} ({pokemonnumber}) {type}').format(pokemon=entered_raid.capitalize(), pokemonnumber=str(raid_number), type=''.join(get_type(message.guild, raid_number)), inline=True))
-    raid_embed.add_field(name=_('**Weaknesses:**'), value=_('{weakness_list}').format(weakness_list=weakness_to_str(message.guild, get_weaknesses(entered_raid))), inline=True)
+    raid_embed.add_field(name=_('**Details:**'), value=_('{pokemon} ({pokemonnumber}) {type}').format(
+        pokemon=pokemon.capitalize(), pokemonnumber=str(raid_number),
+        type=''.join(get_type(message.guild, raid_number)), inline=True))
+    raid_embed.add_field(name=_('**Weaknesses:**'), value=_('{weakness_list}').format(
+        weakness_list=weakness_to_str(message.guild, get_weaknesses(pokemon))), inline=True)
     raid_embed.add_field(name=_('**Next Group:**'), value=_('Set with **!starttime**'), inline=True)
     raid_embed.add_field(name=_('**Expires:**'), value=_('Set with **!timerset**'), inline=True)
-    raid_embed.set_footer(text=_('Reported by @{author} - {timestamp}').format(author=message.author.display_name, timestamp=timestamp), icon_url=message.author.avatar_url_as(format=None, static_format='jpg', size=32))
+    raid_embed.set_footer(text=_('Reported by @{author} - {timestamp}').format(
+        author=message.author.display_name, timestamp=timestamp),
+        icon_url=message.author.avatar_url_as(format=None, static_format='jpg', size=32))
     raid_embed.set_thumbnail(url=raid_img_url)
     report_embed = raid_embed
-    raidreport = await message.channel.send(content=_('Meowth! {pokemon} raid reported by {member}! Details: {location_details}. Coordinate in {raid_channel}').format(pokemon=entered_raid.capitalize(), member=message.author.mention, location_details=raid_details, raid_channel=raid_channel.mention), embed=report_embed)
+    raidreport = await message.channel.send(
+        content=_('Meowth! {pokemon} raid reported by {member}! '
+                  'Details: {location_details}. Coordinate in {raid_channel}').format(
+            pokemon=pokemon.capitalize(), member=message.author.mention,
+            location_details=raid_details, raid_channel=raid_channel.mention), embed=report_embed)
     raid_reports = {message.channel.id: raidreport.id}
     await asyncio.sleep(1)
-    raidmsg = _("{roletest}Meowth! {pokemon} raid reported by {member} in {citychannel}! Details: {location_details}. Coordinate here!\n\nClick the question mark reaction to get help on the commands that work in here.\n\nThis channel will be deleted five minutes after the timer expires.").format(roletest=roletest, pokemon=entered_raid.title(), member=message.author.mention, citychannel=message.channel.mention, location_details=raid_details)
+    raidmsg = _("{roletest}Meowth! {pokemon} raid reported by {member} in {citychannel}! "
+                "Details: {location_details}. Coordinate here!\n\n"
+                "Click the question mark reaction to get help on the commands that work in here.\n\n"
+                "This channel will be deleted five minutes after the timer expires.").format(
+        roletest=roletest, pokemon=pokemon.title(), member=message.author.mention,
+        citychannel=message.channel.mention, location_details=raid_details)
     raidmessage = await raid_channel.send(content=raidmsg, embed=raid_embed)
     await raidmessage.add_reaction('\u2754')
     await raidmessage.pin()
     if gyms:
         await asyncio.sleep(1)
-        content = _('Meowth! {pokemon} raid reported by {member}! Details: {location_details}. Coordinate in {raid_channel}').format(pokemon=entered_raid.capitalize(), member=message.author.mention, location_details=raid_details, raid_channel=raid_channel.mention)
+        content = _('Meowth! {pokemon} raid reported by {member}! Details: {location_details}. '
+                    'Coordinate in {raid_channel}').format(
+            pokemon=pokemon.capitalize(), member=message.author.mention,
+            location_details=raid_details, raid_channel=raid_channel.mention)
         embed = report_embed
         district_reports = await _report_to_districts(message.channel, gym, content, embed)
         if district_reports is not None:
             raid_reports.update(district_reports)
-    level = get_raid_level(entered_raid)
+    level = get_raid_level(pokemon)
     if str(level) in guild_dict[message.guild.id]['configure_dict']['counters']['auto_levels']:
         try:
-            ctrs_dict = await _get_generic_counters(message.guild, entered_raid, weather)
-            ctrsmsg = "Here are the best counters for the raid boss in currently known weather conditions! Update weather with **!weather**. If you know the moveset of the boss, you can react to this message with the matching emoji and I will update the counters."
+            ctrs_dict = await _get_generic_counters(message.guild, pokemon, weather)
+            ctrsmsg = "Here are the best counters for the raid boss in currently known weather conditions!" \
+                      "Update weather with **!weather**. If you know the moveset of the boss, " \
+                      "you can react to this message with the matching emoji and I will update the counters."
             ctrsmessage = await raid_channel.send(content=ctrsmsg,embed=ctrs_dict[0]['embed'])
             ctrsmessage_id = ctrsmessage.id
             await ctrsmessage.pin()
@@ -4829,18 +4810,15 @@ async def _raid(ctx, content):
         'ctrsmessage': ctrsmessage_id,
         'address': raid_details,
         'type': 'raid',
-        'pokemon': entered_raid,
+        'pokemon': pokemon,
         'egglevel': '0',
         'ctrs_dict': ctrs_dict,
         'moveset': 0,
         'weather': weather,
     }
-    if raidexp is not False:
-        await _timerset(raid_channel, raidexp)
-    else:
-        await raid_channel.send(content=_('Meowth! Hey {member}, if you can, set the time left on the raid using **!timerset <minutes>** so others can check it with **!timer**.').format(member=message.author.mention))
+    await _timerset(raid_channel, raid_timer)
     event_loop.create_task(expiry_check(raid_channel))
-    if not fromegg and (level == '4' or level == '5'):
+    if level == '4' or level == '5':
         raid_reports = guild_dict[message.guild.id].setdefault('trainers',{}).setdefault(message.author.id,{}).setdefault('raid_reports',0) + 1
         guild_dict[message.guild.id]['trainers'][message.author.id]['raid_reports'] = raid_reports
     return raid_channel
@@ -4901,84 +4879,28 @@ def _is_raid_duplicate(guild, gym_name, gym_dict):
     return None
 
 
-async def _raidegg(ctx, content):
+async def _raidegg(ctx, egg_level, raid_location, raid_timer):
     message = ctx.message
     timestamp = (message.created_at + datetime.timedelta(hours=guild_dict[message.channel.guild.id]['configure_dict']['settings']['offset'])).strftime(_('%I:%M %p (%H:%M)'))
-    raidexp = False
-    hourminute = False
-    raidegg_split = content.split()
-    if raidegg_split[0].lower() == 'egg':
-        del raidegg_split[0]
-    if len(raidegg_split) <= 1:
-        await message.channel.send(_('Meowth! Give more details when reporting! Usage: **!raidegg <level> <location>**'))
+
+    if (egg_level > 5) or (egg_level == 0):
+        await message.channel.send(_('Coś mieszasz. Rajdy mają poziomy 1-5...'))
         return
-    if raidegg_split[0].isdigit():
-        egg_level = int(raidegg_split[0])
-        del raidegg_split[0]
-    else:
-        await message.channel.send(_('Meowth! Give more details when reporting! Use at least: **!raidegg <level> <location>**. Type **!help** raidegg for more info.'))
+
+    if _timercheck(raid_timer, raid_info['raid_eggs'][str(egg_level)]['hatchtime']):
+        await message.channel.send(
+            _("Coś mieszasz. Rajdy na poziomie {egg_level} wykluwają się maksymalnie w "
+              "{hatchtime} minut...").format(egg_level=egg_level,
+                                             hatchtime=raid_info['raid_eggs'][str(egg_level)]['hatchtime']))
         return
-    if raidegg_split[(- 1)].isdigit():
-        raidexp = int(raidegg_split[(- 1)])
-        del raidegg_split[(- 1)]
-    elif ':' in raidegg_split[(- 1)]:
-        msg = _("Did you mean egg hatch time {0} or time remaining before hatch {1}?").format("🥚", "⏲")
-        question = await message.channel.send(msg)
-        try:
-            timeout = False
-            res, reactuser = await ask(question, message.channel, message.author.id, react_list=['🥚', '⏲'])
-        except TypeError:
-            timeout = True
-        await question.delete()
-        if timeout or res.emoji == '⏲':
-            hourminute = True
-        elif res.emoji == '🥚':
-            now = datetime.datetime.utcnow() + datetime.timedelta(hours=guild_dict[message.channel.guild.id]['configure_dict']['settings']['offset'])
-            start = dateparser.parse(raidegg_split[(- 1)], settings={'PREFER_DATES_FROM': 'future'})
-            if start.day != now.day:
-                if "m" not in raidegg_split[(- 1)]:
-                    start = start + datetime.timedelta(hours=12)
-                start = start.replace(day=now.day)
-            timediff = relativedelta(start, now)
-            raidexp = (timediff.hours*60) + timediff.minutes + 1
-            if raidexp < 0:
-                await message.channel.send(_('Meowth! Please enter a time in the future.'))
-                return
-            del raidegg_split[(- 1)]
-    if hourminute:
-        (h, m) = re.sub('[a-zA-Z]', '', raidegg_split[(- 1)]).split(':', maxsplit=1)
-        if h == '':
-            h = '0'
-        if m == '':
-            m = '0'
-        if h.isdigit() and m.isdigit():
-            raidexp = (60 * int(h)) + int(m)
-        del raidegg_split[(- 1)]
-    if raidexp is not False:
-        if _timercheck(raidexp, raid_info['raid_eggs'][str(egg_level)]['hatchtime']):
-            await message.channel.send(_("Meowth...that's too long. Level {raidlevel} Raid Eggs currently last no more than {hatchtime} minutes...").format(raidlevel=egg_level, hatchtime=raid_info['raid_eggs'][str(egg_level)]['hatchtime']))
-            return
-    raid_details = ' '.join(raidegg_split)
-    raid_details = raid_details.strip()
-    if raid_details == '':
-        await message.channel.send(_('Meowth! Give more details when reporting! Use at least: **!raidegg <level> <location>**. Type **!help** raidegg for more info.'))
-        return
-    rgx = '[^a-zA-Z0-9]'
-    weather_list = [_('none'), _('extreme'), _('clear'), _('sunny'), _('rainy'),
-                    _('partlycloudy'), _('cloudy'), _('windy'), _('snow'), _('fog')]
-    weather = next((w for w in weather_list if re.sub(rgx, '', w) in re.sub(rgx, '', raid_details.lower())), None)
-    raid_details = raid_details.replace(str(weather), '', 1)
-    if not weather:
-        weather = guild_dict[message.guild.id]['raidchannel_dict'].get(message.channel.id,{}).get('weather', None)
-    if raid_details == '':
-        await message.channel.send(_('Meowth! Give more details when reporting! Usage: **!raid <pokemon name> <location>**'))
-        return
+
+    weather = guild_dict[message.guild.id]['raidchannel_dict'].get(message.channel.id, {}).get('weather', None)
     gyms = get_gyms(message.guild.id)
     if gyms:
         gym_matching_cog = Meowth.cogs.get('GymMatching')
-        match, districts = await gym_matching_cog.pick_gym_prompt(ctx, raid_details)
+        match, districts = await gym_matching_cog.pick_gym_prompt(ctx, raid_location)
         if not match:
-            return await message.channel.send(f"Nie znaleziono żadnego gymu pasującego do \"{raid_details}\".")
+            return await message.channel.send(f"Nie znaleziono żadnego gymu pasującego do \"{raid_location}\".")
         if match == "__TIMEOUT__":
             return await message.channel.send(f"Za wolno... spróbuj jeszcze raz.")
         gym = gyms[match]
@@ -4986,92 +4908,125 @@ async def _raidegg(ctx, content):
         gym_coords = gym['coordinates']
         gym_type = gym_matching_cog.get_gym_status(gym)
         raid_gmaps_link = create_gmaps_query(gym_coords, message.channel, type="raid")
-    else:
-        raid_gmaps_link = create_gmaps_query(raid_details, message.channel, type="raid")
-    if (egg_level > 5) or (egg_level == 0):
-        await message.channel.send(_('Meowth! Raid egg levels are only from 1-5!'))
-        return
-    else:
-        is_duplicate = _is_raid_duplicate(message.guild, raid_details, guild_dict[message.guild.id]['raidchannel_dict'])
+        is_duplicate = _is_raid_duplicate(message.guild, gym['name'], guild_dict[message.guild.id]['raidchannel_dict'])
         if is_duplicate is not None:
             await message.channel.send(
-                _('Meowth! To zgłoszenie wygląda na duplikat. Sprawdź czy ktoś już nie zgłosił tego rajdu tu: {}'.format(is_duplicate)))
+                _('To zgłoszenie wygląda na duplikat. '
+                  'Sprawdź czy ktoś już nie zgłosił tego rajdu tu: {}'.format(is_duplicate)))
             return
-        egg_level = str(egg_level)
-        egg_info = raid_info['raid_eggs'][egg_level]
-        egg_img = egg_info['egg_img']
-        boss_list = []
-        for p in egg_info['pokemon']:
-            p_name = get_name(p).title()
-            p_type = get_type(message.guild, p)
-            boss_list.append((((p_name + ' (') + str(p)) + ') ') + ''.join(p_type))
-        raid_channel_name = _('🥚{egg_level}-').format(egg_level=egg_level)
-        raid_channel_name += sanitize_channel_name(raid_details)
-        raid_channel_name = "0👤" + raid_channel_name
-        raid_channel_category = get_category(message.channel, egg_level, category_type="raid")
-        raid_channel = await message.guild.create_text_channel(raid_channel_name, overwrites=dict(message.channel.overwrites), category=raid_channel_category)
-        ow = raid_channel.overwrites_for(raid_channel.guild.default_role)
-        ow.send_messages = True
-        try:
-            await raid_channel.set_permissions(raid_channel.guild.default_role, overwrite = ow)
-        except (discord.errors.Forbidden, discord.errors.HTTPException, discord.errors.InvalidArgument):
-            pass
-        raid_img_url = 'https://raw.githubusercontent.com/FoglyOgly/Meowth/discordpy-v1/images/eggs/{}?cache=0'.format(str(egg_img))
-        raid_embed = discord.Embed(title=_('Meowth! Click here for directions to the coming raid!'), url=raid_gmaps_link, colour=message.guild.me.colour)
-        if gyms:
-            gym_info = _("**Nazwa:** {0}\n**Typ gymu:** {1}").format(raid_details, gym_type)
-            raid_embed.add_field(name=_('**Gym:**'), value=gym_info, inline=False)
-        if len(egg_info['pokemon']) > 1:
-            raid_embed.add_field(name=_('**Possible Bosses:**'), value=_('{bosslist1}').format(bosslist1='\n'.join(boss_list[::2])), inline=True)
-            raid_embed.add_field(name='\u200b', value=_('{bosslist2}').format(bosslist2='\n'.join(boss_list[1::2])), inline=True)
-        else:
-            raid_embed.add_field(name=_('**Possible Bosses:**'), value=_('{bosslist}').format(bosslist=''.join(boss_list)), inline=True)
-            raid_embed.add_field(name='\u200b', value='\u200b', inline=True)
-        raid_embed.add_field(name=_('**Next Group:**'), value=_('Set with **!starttime**'), inline=True)
-        raid_embed.add_field(name=_('**Hatches:**'), value=_('Set with **!timerset**'), inline=True)
-        raid_embed.set_footer(text=_('Reported by @{author} - {timestamp}').format(author=message.author.display_name, timestamp=timestamp), icon_url=message.author.avatar_url_as(format=None, static_format='jpg', size=32))
-        raid_embed.set_thumbnail(url=raid_img_url)
-        raidreport = await message.channel.send(content=_('Meowth! Level {level} raid egg reported by {member}! Details: {location_details}. Coordinate in {raid_channel}').format(level=egg_level, member=message.author.mention, location_details=raid_details, raid_channel=raid_channel.mention), embed=raid_embed)
+    else:
+        raid_details = raid_location
+        raid_gmaps_link = create_gmaps_query(raid_location, message.channel, type="raid")
+
+    egg_level = str(egg_level)
+    egg_info = raid_info['raid_eggs'][egg_level]
+    egg_img = egg_info['egg_img']
+    boss_list = []
+    for p in egg_info['pokemon']:
+        p_name = get_name(p).title()
+        p_type = get_type(message.guild, p)
+        boss_list.append((((p_name + ' (') + str(p)) + ') ') + ''.join(p_type))
+    raid_channel_name = _('🥚{egg_level}-').format(egg_level=egg_level)
+    raid_channel_name += sanitize_channel_name(raid_details)
+    raid_channel_name = "0👤" + raid_channel_name
+    raid_channel_category = get_category(message.channel, egg_level, category_type="raid")
+    raid_channel = await message.guild.create_text_channel(
+        raid_channel_name, overwrites=dict(message.channel.overwrites), category=raid_channel_category)
+    ow = raid_channel.overwrites_for(raid_channel.guild.default_role)
+    ow.send_messages = True
+    try:
+        await raid_channel.set_permissions(raid_channel.guild.default_role, overwrite=ow)
+    except (discord.errors.Forbidden, discord.errors.HTTPException, discord.errors.InvalidArgument):
+        pass
+    raid_img_url =\
+        'https://raw.githubusercontent.com/FoglyOgly/Meowth/discordpy-v1/images/eggs/{}?cache=0'.format(str(egg_img))
+    raid_embed = discord.Embed(
+        title=_('Meowth! Click here for directions to the coming raid!'),
+        url=raid_gmaps_link,
+        colour=message.guild.me.colour)
+    if gyms:
+        gym_info = _("**Nazwa:** {0}\n**Typ gymu:** {1}").format(raid_details, gym_type)
+        raid_embed.add_field(name=_('**Gym:**'), value=gym_info, inline=False)
+    if len(egg_info['pokemon']) > 1:
+        raid_embed.add_field(
+            name=_('**Possible Bosses:**'),
+            value=_('{bosslist1}').format(bosslist1='\n'.join(boss_list[::2])),
+            inline=True)
+        raid_embed.add_field(
+            name='\u200b',
+            value=_('{bosslist2}').format(bosslist2='\n'.join(boss_list[1::2])),
+            inline=True)
+    else:
+        raid_embed.add_field(
+            name=_('**Possible Bosses:**'), value=_('{bosslist}').format(bosslist=''.join(boss_list)), inline=True)
+        raid_embed.add_field(name='\u200b', value='\u200b', inline=True)
+    raid_embed.add_field(name=_('**Next Group:**'), value=_('Set with **!starttime**'), inline=True)
+    raid_embed.add_field(name=_('**Hatches:**'), value=_('Set with **!timerset**'), inline=True)
+    raid_embed.set_footer(
+        text=_('Reported by @{author} - {timestamp}').format(
+            author=message.author.display_name, timestamp=timestamp),
+        icon_url=message.author.avatar_url_as(format=None, static_format='jpg', size=32))
+    raid_embed.set_thumbnail(url=raid_img_url)
+    raidreport = await message.channel.send(
+        content=_('Meowth! Level {level} raid egg reported by {member}! Details: {location_details}. '
+                  'Coordinate in {raid_channel}').format(
+            level=egg_level, member=message.author.mention,
+            location_details=raid_details,
+            raid_channel=raid_channel.mention),
+        embed=raid_embed)
+    await asyncio.sleep(1)
+    raid_reports = {message.channel.id: raidreport.id}
+    raidmsg = _("Meowth! Level {level} raid egg reported by {member} in {citychannel}! "
+                "Details: {location_details}. Coordinate here!\n\n"
+                "Click the question mark reaction to get help on the commands that work in here.\n\n"
+                "This channel will be deleted five minutes after the timer expires.").format(
+        level=egg_level,
+        member=message.author.mention,
+        citychannel=message.channel.mention,
+        location_details=raid_details)
+    raidmessage = await raid_channel.send(content=raidmsg, embed=raid_embed)
+    await raidmessage.add_reaction('\u2754')
+    await raidmessage.pin()
+    if gyms:
         await asyncio.sleep(1)
-        raid_reports = {message.channel.id: raidreport.id}
-        raidmsg = _("Meowth! Level {level} raid egg reported by {member} in {citychannel}! Details: {location_details}. Coordinate here!\n\nClick the question mark reaction to get help on the commands that work in here.\n\nThis channel will be deleted five minutes after the timer expires.").format(level=egg_level, member=message.author.mention, citychannel=message.channel.mention, location_details=raid_details)
-        raidmessage = await raid_channel.send(content=raidmsg, embed=raid_embed)
-        await raidmessage.add_reaction('\u2754')
-        await raidmessage.pin()
-        if gyms:
-            await asyncio.sleep(1)
-            content = _('Meowth! Level {level} raid egg reported by {member}! Details: {location_details}. Coordinate in {raid_channel}').format(level=egg_level, member=message.author.mention, location_details=raid_details, raid_channel=raid_channel.mention)
-            embed = raid_embed
-            district_reports = await _report_to_districts(message.channel, gym, content, embed)
-            if district_reports is not None:
-                raid_reports.update(district_reports)
-        guild_dict[message.guild.id]['raidchannel_dict'][raid_channel.id] = {
-            'reportcity': raid_reports,
-            'trainer_dict': {},
-            'exp': time.time() + (60 * raid_info['raid_eggs'][egg_level]['hatchtime']),
-            'manual_timer': False,
-            'active': True,
-            'raidmessage': raidmessage.id,
-            'address': raid_details,
-            'type': 'egg',
-            'pokemon': '',
-            'egglevel': egg_level,
-            'weather': weather,
-            'moveset': 0,
-        }
-        if raidexp is not False:
-            await _timerset(raid_channel, raidexp)
-        else:
-            await raid_channel.send(content=_('Meowth! Hey {member}, if you can, set the time left until the egg hatches using **!timerset <minutes>** so others can check it with **!timer**.').format(member=message.author.mention))
-        if len(raid_info['raid_eggs'][egg_level]['pokemon']) == 1:
-            await _eggassume('assume ' + get_name(raid_info['raid_eggs'][egg_level]['pokemon'][0]), raid_channel)
-        elif egg_level == "5" and guild_dict[raid_channel.guild.id]['configure_dict']['settings'].get('regional',None) in raid_info['raid_eggs']["5"]['pokemon']:
-            await _eggassume('assume ' + get_name(guild_dict[raid_channel.guild.id]['configure_dict']['settings']['regional']), raid_channel)
-        event_loop.create_task(expiry_check(raid_channel))
-        if egg_level == '4' or egg_level == '5':
-            egg_reports = guild_dict[message.guild.id].setdefault('trainers',{}).setdefault(message.author.id,{}).setdefault('egg_reports',0) + 1
-            guild_dict[message.guild.id]['trainers'][message.author.id]['egg_reports'] = egg_reports
-        return raid_channel
+        content = _('Meowth! Level {level} raid egg reported by {member}! Details: {location_details}. '
+                    'Coordinate in {raid_channel}').format(
+            level=egg_level, member=message.author.mention,
+            location_details=raid_details,
+            raid_channel=raid_channel.mention)
+        embed = raid_embed
+        district_reports = await _report_to_districts(message.channel, gym, content, embed)
+        if district_reports is not None:
+            raid_reports.update(district_reports)
+    guild_dict[message.guild.id]['raidchannel_dict'][raid_channel.id] = {
+        'reportcity': raid_reports,
+        'trainer_dict': {},
+        'exp': time.time() + (60 * raid_info['raid_eggs'][egg_level]['hatchtime']),
+        'manual_timer': False,
+        'active': True,
+        'raidmessage': raidmessage.id,
+        'address': raid_details,
+        'type': 'egg',
+        'pokemon': '',
+        'egglevel': egg_level,
+        'weather': weather,
+        'moveset': 0,
+    }
+    await _timerset(raid_channel, raid_timer)
+
+    if len(raid_info['raid_eggs'][egg_level]['pokemon']) == 1:
+        await _eggassume('assume ' + get_name(raid_info['raid_eggs'][egg_level]['pokemon'][0]), raid_channel)
+    elif egg_level == "5" and \
+            guild_dict[raid_channel.guild.id]['configure_dict']['settings'].get('regional', None) in \
+            raid_info['raid_eggs']["5"]['pokemon']:
+        await _eggassume(
+            'assume ' + get_name(guild_dict[raid_channel.guild.id]['configure_dict']['settings']['regional']),
+            raid_channel)
+    event_loop.create_task(expiry_check(raid_channel))
+    if egg_level == '4' or egg_level == '5':
+        egg_reports = guild_dict[message.guild.id].setdefault('trainers',{}).setdefault(message.author.id,{}).setdefault('egg_reports',0) + 1
+        guild_dict[message.guild.id]['trainers'][message.author.id]['egg_reports'] = egg_reports
+    return raid_channel
 
 
 async def _eggassume(args, raid_channel, author=None):
