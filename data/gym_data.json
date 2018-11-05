@@ -602,7 +602,11 @@
 "Cechowa Plac Zabaw":{"coordinates":"50.003134,19.950183","is_ex":"No","can_be_ex":"No","districts":["podgórze-duchackie"],"notes":"Zgłoszone przez Radkovitz"},
 "Jezus w Krzakach":{"coordinates":"49.995746,19.959758","is_ex":"No","can_be_ex":"No","districts":["pozostałe"],"notes":"Zgłoszone przez Radkovitz"},
 "Pozostałości Po Cmentarzu Cholerycznym":{"coordinates":"50.042136,19.990327","is_ex":"No","can_be_ex":"No","districts":["płaszów"]},
-"Plac Zabaw Przy Orliku":{"coordinates":"50.044049,20.001701","is_ex":"No","can_be_ex":"No","districts":["płaszów"],"has_ex_tag":"No"}
+"Plac Zabaw Przy Orliku":{"coordinates":"50.044049,20.001701","is_ex":"No","can_be_ex":"No","districts":["płaszów"],"has_ex_tag":"No"},
+"Iron Man":{"coordinates":"50.055784,20.037871","is_ex":"No","can_be_ex":"No","districts":["czyżyny"],"notes":"Zgłoszone przez NuSieKu"},
+"Tablica Pamiątkowa Glinnik":{"coordinates":"50.049247,19.883709","is_ex":"No","can_be_ex":"No","districts":["pozostałe"],"notes":"Zgłoszone przez NuSieKu"},
+"Krzyż Przy Moście Zwierzynieckim":{"coordinates":"50.048875,19.904033","is_ex":"No","can_be_ex":"No","districts":["pozostałe"],"notes":"Zgłoszone przez NuSieKu"},
+"Swoszowice - Kapliczka":{"coordinates":"49.979834,19.954532","is_ex":"No","can_be_ex":"No","districts":["pozostałe"],"notes":"Zgłoszone przez Radkovitz"}
 },
 "443820658934153216":{
 "4 Clubs Fountain":{"coordinates":"50.055361,19.93251","is_ex":"No","can_be_ex":"No","districts":["centrum"]},
@@ -1207,7 +1211,11 @@
 "Cechowa Plac Zabaw":{"coordinates":"50.003134,19.950183","is_ex":"No","can_be_ex":"No","districts":["podgórze-duchackie"],"notes":"Zgłoszone przez Radkovitz"},
 "Jezus w Krzakach":{"coordinates":"49.995746,19.959758","is_ex":"No","can_be_ex":"No","districts":["pozostałe"],"notes":"Zgłoszone przez Radkovitz"},
 "Pozostałości Po Cmentarzu Cholerycznym":{"coordinates":"50.042136,19.990327","is_ex":"No","can_be_ex":"No","districts":["płaszów"]},
-"Plac Zabaw Przy Orliku":{"coordinates":"50.044049,20.001701","is_ex":"No","can_be_ex":"No","districts":["płaszów"],"has_ex_tag":"No"}
+"Plac Zabaw Przy Orliku":{"coordinates":"50.044049,20.001701","is_ex":"No","can_be_ex":"No","districts":["płaszów"],"has_ex_tag":"No"},
+"Iron Man":{"coordinates":"50.055784,20.037871","is_ex":"No","can_be_ex":"No","districts":["czyżyny"],"notes":"Zgłoszone przez NuSieKu"},
+"Tablica Pamiątkowa Glinnik":{"coordinates":"50.049247,19.883709","is_ex":"No","can_be_ex":"No","districts":["pozostałe"],"notes":"Zgłoszone przez NuSieKu"},
+"Krzyż Przy Moście Zwierzynieckim":{"coordinates":"50.048875,19.904033","is_ex":"No","can_be_ex":"No","districts":["pozostałe"],"notes":"Zgłoszone przez NuSieKu"},
+"Swoszowice - Kapliczka":{"coordinates":"49.979834,19.954532","is_ex":"No","can_be_ex":"No","districts":["pozostałe"],"notes":"Zgłoszone przez Radkovitz"}
 },
 "393378906788331520":{
 "Sue Ryder":{"coordinates":"54.5082019,18.5437417","is_ex":"Yes","can_be_ex":"Yes","districts":["centrum"]},
