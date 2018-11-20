@@ -606,7 +606,10 @@
 "Iron Man":{"coordinates":"50.055784,20.037871","is_ex":"No","can_be_ex":"No","districts":["czyżyny"],"notes":"Zgłoszone przez NuSieKu"},
 "Tablica Pamiątkowa Glinnik":{"coordinates":"50.049247,19.883709","is_ex":"No","can_be_ex":"No","districts":["pozostałe"],"notes":"Zgłoszone przez NuSieKu"},
 "Krzyż Przy Moście Zwierzynieckim":{"coordinates":"50.048875,19.904033","is_ex":"No","can_be_ex":"No","districts":["pozostałe"],"notes":"Zgłoszone przez NuSieKu"},
-"Swoszowice - Kapliczka":{"coordinates":"49.979834,19.954532","is_ex":"No","can_be_ex":"No","districts":["pozostałe"],"notes":"Zgłoszone przez Radkovitz"}
+"Swoszowice - Kapliczka":{"coordinates":"49.979834,19.954532","is_ex":"No","can_be_ex":"No","districts":["pozostałe"],"notes":"Zgłoszone przez Radkovitz"},
+"Plac Zabaw Przy Ulicy Marchołta":{"coordinates":"50.092522,19.985556","is_ex":"No","can_be_ex":"No","districts":["olsza"],"notes":"Zgłoszone przez Gonorr"},
+"Karmnik Dla Ptakow":{"coordinates":"50.081082,20.011012","is_ex":"No","can_be_ex":"No","districts":["czyżyny"],"notes":"Zgłoszone przez Neizok"},
+"TWIERDZA KRAKÓW - FORT 48A - M":{"coordinates":"50.10109,20.017437","is_ex":"No","can_be_ex":"No","districts":["mistrzejowice"],"notes":"Zgłoszone przez Ibiquer"}
 },
 "443820658934153216":{
 "4 Clubs Fountain":{"coordinates":"50.055361,19.93251","is_ex":"No","can_be_ex":"No","districts":["centrum"]},
@@ -1215,7 +1218,10 @@
 "Iron Man":{"coordinates":"50.055784,20.037871","is_ex":"No","can_be_ex":"No","districts":["czyżyny"],"notes":"Zgłoszone przez NuSieKu"},
 "Tablica Pamiątkowa Glinnik":{"coordinates":"50.049247,19.883709","is_ex":"No","can_be_ex":"No","districts":["pozostałe"],"notes":"Zgłoszone przez NuSieKu"},
 "Krzyż Przy Moście Zwierzynieckim":{"coordinates":"50.048875,19.904033","is_ex":"No","can_be_ex":"No","districts":["pozostałe"],"notes":"Zgłoszone przez NuSieKu"},
-"Swoszowice - Kapliczka":{"coordinates":"49.979834,19.954532","is_ex":"No","can_be_ex":"No","districts":["pozostałe"],"notes":"Zgłoszone przez Radkovitz"}
+"Swoszowice - Kapliczka":{"coordinates":"49.979834,19.954532","is_ex":"No","can_be_ex":"No","districts":["pozostałe"],"notes":"Zgłoszone przez Radkovitz"},
+"Plac Zabaw Przy Ulicy Marchołta":{"coordinates":"50.092522,19.985556","is_ex":"No","can_be_ex":"No","districts":["olsza"],"notes":"Zgłoszone przez Gonorr"},
+"Karmnik Dla Ptakow":{"coordinates":"50.081082,20.011012","is_ex":"No","can_be_ex":"No","districts":["czyżyny"],"notes":"Zgłoszone przez Neizok"},
+"TWIERDZA KRAKÓW - FORT 48A - M":{"coordinates":"50.10109,20.017437","is_ex":"No","can_be_ex":"No","districts":["mistrzejowice"],"notes":"Zgłoszone przez Ibiquer"}
 },
 "393378906788331520":{
 "Sue Ryder":{"coordinates":"54.5082019,18.5437417","is_ex":"Yes","can_be_ex":"Yes","districts":["centrum"]},
