@@ -119,7 +119,6 @@
 "Fort Pancerny Główny 47a Węgrzce":{"coordinates":"50.115698,19.966587","is_ex":"No","can_be_ex":"No","districts":["pozostałe"]},
 "Fort Reditowy 12 IVa Luneta Wa":{"coordinates":"50.077709,19.946647","is_ex":"Yes","can_be_ex":"Yes","districts":["krowodrza","olsza"],"has_ex_tag":"Yes"},
 "Fountain":{"coordinates":"50.02054,19.89925","is_ex":"No","can_be_ex":"No","districts":["ruczaj"]},
-"Fountain 2.0":{"coordinates":"50.067878,19.923768","is_ex":"No","can_be_ex":"Yes","districts":["łobzów"]},
 "Fountain In Market Square":{"coordinates":"50.061899,19.938253","is_ex":"No","can_be_ex":"No","districts":["centrum"]},
 "Fountain in Pasaz Ruczaj":{"coordinates":"50.021218,19.902798","is_ex":"No","can_be_ex":"No","districts":["ruczaj"]},
 "Galeria Krakowska":{"coordinates":"50.066064,19.946074","is_ex":"No","can_be_ex":"No","districts":["centrum"]},
@@ -266,7 +265,6 @@
 "Krzyż W Lasku Wolskim":{"coordinates":"50.054294,19.847103","is_ex":"No","can_be_ex":"No","districts":["pozostałe"]},
 "Krzyż z Groszowej Ofiary":{"coordinates":"50.074968,19.912312","is_ex":"No","can_be_ex":"No","districts":["łobzów"]},
 "Ku pamięci rozstrzelanych":{"coordinates":"50.094831,20.064292","is_ex":"No","can_be_ex":"No","districts":["nowa-huta"],"notes":"Zgłoszone przez zwinkavin"},
-"Kucharczyk Przy Pętli":{"coordinates":"50.013427,19.949565","is_ex":"No","can_be_ex":"No","districts":["podgórze-duchackie"]},
 "Kucharz Meksyk":{"coordinates":"50.070343,20.100663","is_ex":"No","can_be_ex":"No","districts":["pozostałe"]},
 "Kula Grozy w Parku Wyspianskiego":{"coordinates":"50.086047,19.920851","is_ex":"No","can_be_ex":"Yes","districts":["azory"]},
 "La Salette on Cegielniana I":{"coordinates":"50.025965,19.930265","is_ex":"Yes","can_be_ex":"Yes","districts":["łagiewniki-borek"],"has_ex_tag":"Yes"},
@@ -612,7 +610,9 @@
 "TWIERDZA KRAKÓW - FORT 48A - M":{"coordinates":"50.10109,20.017437","is_ex":"No","can_be_ex":"No","districts":["mistrzejowice"],"notes":"Zgłoszone przez Ibiquer"},
 "Stajnie koszarów kawalerii austrowęgierskiej.":{"coordinates":"50.039101,19.923258","is_ex":"No","can_be_ex":"No","districts":["dębniki"],"notes":"Zgłoszone przez NuSieKu"},
 "Angels on the Roof":{"coordinates":"50.101101,19.965778","is_ex":"No","can_be_ex":"No","districts":["prądnik"],"notes":"Zgłoszone przez Radkovitz"},
-"Kapliczka przy Fatimskiej":{"coordinates":"50.087846,20.028969","is_ex":"No","can_be_ex":"No","districts":["nowa-huta"]}
+"Kapliczka przy Fatimskiej":{"coordinates":"50.087846,20.028969","is_ex":"No","can_be_ex":"No","districts":["nowa-huta"]},
+"Wyspiański - Polikultura 2018":{"coordinates":"50.012525,19.947753","is_ex":"No","can_be_ex":"No","districts":["podgórze-duchackie"],"notes":"Zgłoszone przez Radkovitz"},
+"Stone Fish":{"coordinates":"50.065843,19.923567","is_ex":"No","can_be_ex":"No","districts":["łobzów"]}
 },
 "443820658934153216":{
 "4 Clubs Fountain":{"coordinates":"50.055361,19.93251","is_ex":"No","can_be_ex":"No","districts":["centrum"]},
@@ -734,7 +734,6 @@
 "Fort Pancerny Główny 47a Węgrzce":{"coordinates":"50.115698,19.966587","is_ex":"No","can_be_ex":"No","districts":["pozostałe"]},
 "Fort Reditowy 12 IVa Luneta Wa":{"coordinates":"50.077709,19.946647","is_ex":"Yes","can_be_ex":"Yes","districts":["krowodrza","olsza"],"has_ex_tag":"Yes"},
 "Fountain":{"coordinates":"50.02054,19.89925","is_ex":"No","can_be_ex":"No","districts":["ruczaj"]},
-"Fountain 2.0":{"coordinates":"50.067878,19.923768","is_ex":"No","can_be_ex":"Yes","districts":["łobzów"]},
 "Fountain In Market Square":{"coordinates":"50.061899,19.938253","is_ex":"No","can_be_ex":"No","districts":["centrum"]},
 "Fountain in Pasaz Ruczaj":{"coordinates":"50.021218,19.902798","is_ex":"No","can_be_ex":"No","districts":["ruczaj"]},
 "Galeria Krakowska":{"coordinates":"50.066064,19.946074","is_ex":"No","can_be_ex":"No","districts":["centrum"]},
@@ -881,7 +880,6 @@
 "Krzyż W Lasku Wolskim":{"coordinates":"50.054294,19.847103","is_ex":"No","can_be_ex":"No","districts":["pozostałe"]},
 "Krzyż z Groszowej Ofiary":{"coordinates":"50.074968,19.912312","is_ex":"No","can_be_ex":"No","districts":["łobzów"]},
 "Ku pamięci rozstrzelanych":{"coordinates":"50.094831,20.064292","is_ex":"No","can_be_ex":"No","districts":["nowa-huta"],"notes":"Zgłoszone przez zwinkavin"},
-"Kucharczyk Przy Pętli":{"coordinates":"50.013427,19.949565","is_ex":"No","can_be_ex":"No","districts":["podgórze-duchackie"]},
 "Kucharz Meksyk":{"coordinates":"50.070343,20.100663","is_ex":"No","can_be_ex":"No","districts":["pozostałe"]},
 "Kula Grozy w Parku Wyspianskiego":{"coordinates":"50.086047,19.920851","is_ex":"No","can_be_ex":"Yes","districts":["azory"]},
 "La Salette on Cegielniana I":{"coordinates":"50.025965,19.930265","is_ex":"Yes","can_be_ex":"Yes","districts":["łagiewniki-borek"],"has_ex_tag":"Yes"},
@@ -1227,7 +1225,9 @@
 "TWIERDZA KRAKÓW - FORT 48A - M":{"coordinates":"50.10109,20.017437","is_ex":"No","can_be_ex":"No","districts":["mistrzejowice"],"notes":"Zgłoszone przez Ibiquer"},
 "Stajnie koszarów kawalerii austrowęgierskiej.":{"coordinates":"50.039101,19.923258","is_ex":"No","can_be_ex":"No","districts":["dębniki"],"notes":"Zgłoszone przez NuSieKu"},
 "Angels on the Roof":{"coordinates":"50.101101,19.965778","is_ex":"No","can_be_ex":"No","districts":["prądnik"],"notes":"Zgłoszone przez Radkovitz"},
-"Kapliczka przy Fatimskiej":{"coordinates":"50.087846,20.028969","is_ex":"No","can_be_ex":"No","districts":["nowa-huta"]}
+"Kapliczka przy Fatimskiej":{"coordinates":"50.087846,20.028969","is_ex":"No","can_be_ex":"No","districts":["nowa-huta"]},
+"Wyspiański - Polikultura 2018":{"coordinates":"50.012525,19.947753","is_ex":"No","can_be_ex":"No","districts":["podgórze-duchackie"],"notes":"Zgłoszone przez Radkovitz"},
+"Stone Fish":{"coordinates":"50.065843,19.923567","is_ex":"No","can_be_ex":"No","districts":["łobzów"]}
 },
 "393378906788331520":{
 "Sue Ryder":{"coordinates":"54.5082019,18.5437417","is_ex":"Yes","can_be_ex":"Yes","districts":["centrum"]},
