@@ -620,7 +620,7 @@
 "Ptasia Tablica Las Wolski":{"coordinates":"50.061572,19.854678","is_ex":"No","can_be_ex":"No","districts":["pozostałe"]},
 "Altana Na Polanie Wobra":{"coordinates":"50.057735,19.857618","is_ex":"No","can_be_ex":"No","districts":["pozostałe"]},
 "Plac Zabaw Na Alejkach":{"coordinates":"50.091,19.963986","is_ex":"No","can_be_ex":"No","districts":["olsza"]},
-"Fort Artyleryjski 48 "Batowice"":{"coordinates":"50.099737,19.998564","is_ex":"Yes","can_be_ex":"Yes","districts":["mistrzejowice"]},
+"Fort Artyleryjski 48 Batowice":{"coordinates":"50.099737,19.998564","is_ex":"Yes","can_be_ex":"Yes","districts":["mistrzejowice"]},
 "Zabytkowa Kapliczka":{"coordinates":"50.071848,20.116122","is_ex":"No","can_be_ex":"No","districts":["pozostałe"]},
 "Kompleks Sportowy na Miasteczku AGH":{"coordinates":"50.06816,19.903936","is_ex":"No","can_be_ex":"No","districts":["łobzów"]},
 "Afro Guy Mural on Pylon":{"coordinates":"50.053898,19.965965","is_ex":"No","can_be_ex":"No","districts":["grzegórzki"]}
@@ -1246,7 +1246,7 @@
 "Ptasia Tablica Las Wolski":{"coordinates":"50.061572,19.854678","is_ex":"No","can_be_ex":"No","districts":["pozostałe"]},
 "Altana Na Polanie Wobra":{"coordinates":"50.057735,19.857618","is_ex":"No","can_be_ex":"No","districts":["pozostałe"]},
 "Plac Zabaw Na Alejkach":{"coordinates":"50.091,19.963986","is_ex":"No","can_be_ex":"No","districts":["olsza"]},
-"Fort Artyleryjski 48 "Batowice"":{"coordinates":"50.099737,19.998564","is_ex":"Yes","can_be_ex":"Yes","districts":["mistrzejowice"]},
+"Fort Artyleryjski 48 Batowice":{"coordinates":"50.099737,19.998564","is_ex":"Yes","can_be_ex":"Yes","districts":["mistrzejowice"]},
 "Zabytkowa Kapliczka":{"coordinates":"50.071848,20.116122","is_ex":"No","can_be_ex":"No","districts":["pozostałe"]},
 "Kompleks Sportowy na Miasteczku AGH":{"coordinates":"50.06816,19.903936","is_ex":"No","can_be_ex":"No","districts":["łobzów"]},
 "Afro Guy Mural on Pylon":{"coordinates":"50.053898,19.965965","is_ex":"No","can_be_ex":"No","districts":["grzegórzki"]}
