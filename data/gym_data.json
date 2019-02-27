@@ -308,7 +308,7 @@
 "Mural Kwiaciarnia":{"coordinates":"50.086382,20.008658","is_ex":"No","can_be_ex":"No","districts":["czyżyny","mistrzejowice"]},
 "Mural Nowa Huta Rekin":{"coordinates":"50.085019,20.008911","is_ex":"No","can_be_ex":"No","districts":["czyżyny"]},
 "Mural Olsza II":{"coordinates":"50.083195,19.96578","is_ex":"No","can_be_ex":"No","districts":["olsza"]},
-"Mural on the Wing":{"coordinates":"50.073718,19.989117","is_ex":"No","can_be_ex":"No","districts":["czyżyny"]},
+"Skrzydło Lotnicze":{"coordinates":"50.073718,19.989117","is_ex":"No","can_be_ex":"No","districts":["czyżyny"]},
 "Mural Pajak":{"coordinates":"50.079958,20.013049","is_ex":"No","can_be_ex":"No","districts":["czyżyny"]},
 "Mural Schody Ruchome":{"coordinates":"50.066478,19.94847","is_ex":"No","can_be_ex":"No","districts":["centrum"]},
 "Mural Squirrel":{"coordinates":"50.038817,19.996622","is_ex":"No","can_be_ex":"No","districts":["płaszów"]},
@@ -467,7 +467,7 @@
 "Spiacy Aniol":{"coordinates":"50.04596,20.047989","is_ex":"No","can_be_ex":"No","districts":["płaszów"]},
 "Spożywczy Mural":{"coordinates":"50.0406313,19.9759887","is_ex":"No","can_be_ex":"No","districts":["płaszów"],"notes":"Zgłoszone przez Neizok"},
 "Sprzedam Jezusa":{"coordinates":"50.076667,19.949721","is_ex":"No","can_be_ex":"No","districts":["olsza"]},
-"St. Mary Magdalain Church In Kosocice":{"coordinates":"49.995259,19.989309","is_ex":"No","can_be_ex":"No","districts":["pozostałe"]},
+"St. Mary Magdalain Church In Kosocice":{"coordinates":"49.994766,19.989076","is_ex":"No","can_be_ex":"No","districts":["pozostałe"]},
 "Stacja Kraków Krzemionki":{"coordinates":"50.040755,19.959259","is_ex":"No","can_be_ex":"No","districts":["podgórze-duchackie"]},
 "Stadion KS BOREK":{"coordinates":"50.016987,19.92173","is_ex":"No","can_be_ex":"No","districts":["łagiewniki-borek"]},
 "Stara Obronna Armata":{"coordinates":"50.054934,19.89433","is_ex":"No","can_be_ex":"No","districts":["salwator"]},
@@ -507,7 +507,6 @@
 "Tram Post":{"coordinates":"50.0306486,19.9248269","is_ex":"No","can_be_ex":"No","districts":["łagiewniki-borek"],"notes":"Zgłoszone przez HotaruOkami"},
 "Tram Station":{"coordinates":"50.022126,19.932536","is_ex":"No","can_be_ex":"No","districts":["łagiewniki-borek"]},
 "Trash Ball Borek":{"coordinates":"50.017281,19.920984","is_ex":"No","can_be_ex":"No","districts":["łagiewniki-borek"]},
-"Trolujący Mural":{"coordinates":"50.061726,19.940535","is_ex":"No","can_be_ex":"No","districts":["centrum"]},
 "Trójwalec":{"coordinates":"50.034752,19.924958","is_ex":"No","can_be_ex":"No","districts":["łagiewniki-borek","dębniki"]},
 "Tryumfalna Brama Miasta Zwycięstwo Grunwaldzkie":{"coordinates":"50.041669,19.961313","is_ex":"No","can_be_ex":"No","districts":["bieżanów-prokocim","podgórze"]},
 "Trzepakowy Krąg":{"coordinates":"50.043589,19.943758","is_ex":"Yes","can_be_ex":"Yes","districts":["podgórze"]},
@@ -625,7 +624,8 @@
 "Kompleks Sportowy na Miasteczku AGH":{"coordinates":"50.06816,19.903936","is_ex":"No","can_be_ex":"No","districts":["łobzów"]},
 "Afro Guy Mural on Pylon":{"coordinates":"50.053898,19.965965","is_ex":"No","can_be_ex":"No","districts":["grzegórzki"]},
 "Wartownia Zamku w Przegorzałach":{"coordinates":"50.049578,19.871052","is_ex":"No","can_be_ex":"No","districts":["pozostałe"]},
-"Psi Park Integracyjno-Rekreacyjny":{"coordinates":"50.077549,20.004821","is_ex":"No","can_be_ex":"No","districts":["czyżyny"]}
+"Psi Park Integracyjno-Rekreacyjny":{"coordinates":"50.077549,20.004821","is_ex":"No","can_be_ex":"No","districts":["czyżyny"]},
+"Polonia Hotel":{"coordinates":"50.064831,19.944790","is_ex":"No","can_be_ex":"No","districts":["centrum"]}
 },
 "443820658934153216":{
 "4 Clubs Fountain":{"coordinates":"50.055361,19.93251","is_ex":"No","can_be_ex":"No","districts":["centrum"]},
@@ -936,7 +936,7 @@
 "Mural Kwiaciarnia":{"coordinates":"50.086382,20.008658","is_ex":"No","can_be_ex":"No","districts":["czyżyny","mistrzejowice"]},
 "Mural Nowa Huta Rekin":{"coordinates":"50.085019,20.008911","is_ex":"No","can_be_ex":"No","districts":["czyżyny"]},
 "Mural Olsza II":{"coordinates":"50.083195,19.96578","is_ex":"No","can_be_ex":"No","districts":["olsza"]},
-"Mural on the Wing":{"coordinates":"50.073718,19.989117","is_ex":"No","can_be_ex":"No","districts":["czyżyny"]},
+"Skrzydło Lotnicze":{"coordinates":"50.073718,19.989117","is_ex":"No","can_be_ex":"No","districts":["czyżyny"]},
 "Mural Pajak":{"coordinates":"50.079958,20.013049","is_ex":"No","can_be_ex":"No","districts":["czyżyny"]},
 "Mural Schody Ruchome":{"coordinates":"50.066478,19.94847","is_ex":"No","can_be_ex":"No","districts":["centrum"]},
 "Mural Squirrel":{"coordinates":"50.038817,19.996622","is_ex":"No","can_be_ex":"No","districts":["płaszów"]},
@@ -1095,7 +1095,7 @@
 "Spiacy Aniol":{"coordinates":"50.04596,20.047989","is_ex":"No","can_be_ex":"No","districts":["płaszów"]},
 "Spożywczy Mural":{"coordinates":"50.0406313,19.9759887","is_ex":"No","can_be_ex":"No","districts":["płaszów"],"notes":"Zgłoszone przez Neizok"},
 "Sprzedam Jezusa":{"coordinates":"50.076667,19.949721","is_ex":"No","can_be_ex":"No","districts":["olsza"]},
-"St. Mary Magdalain Church In Kosocice":{"coordinates":"49.995259,19.989309","is_ex":"No","can_be_ex":"No","districts":["pozostałe"]},
+"St. Mary Magdalain Church In Kosocice":{"coordinates":"49.994766,19.989076","is_ex":"No","can_be_ex":"No","districts":["pozostałe"]},
 "Stacja Kraków Krzemionki":{"coordinates":"50.040755,19.959259","is_ex":"No","can_be_ex":"No","districts":["podgórze-duchackie"]},
 "Stadion KS BOREK":{"coordinates":"50.016987,19.92173","is_ex":"No","can_be_ex":"No","districts":["łagiewniki-borek"]},
 "Stara Obronna Armata":{"coordinates":"50.054934,19.89433","is_ex":"No","can_be_ex":"No","districts":["salwator"]},
@@ -1135,7 +1135,6 @@
 "Tram Post":{"coordinates":"50.0306486,19.9248269","is_ex":"No","can_be_ex":"No","districts":["łagiewniki-borek"],"notes":"Zgłoszone przez HotaruOkami"},
 "Tram Station":{"coordinates":"50.022126,19.932536","is_ex":"No","can_be_ex":"No","districts":["łagiewniki-borek"]},
 "Trash Ball Borek":{"coordinates":"50.017281,19.920984","is_ex":"No","can_be_ex":"No","districts":["łagiewniki-borek"]},
-"Trolujący Mural":{"coordinates":"50.061726,19.940535","is_ex":"No","can_be_ex":"No","districts":["centrum"]},
 "Trójwalec":{"coordinates":"50.034752,19.924958","is_ex":"No","can_be_ex":"No","districts":["łagiewniki-borek","dębniki"]},
 "Tryumfalna Brama Miasta Zwycięstwo Grunwaldzkie":{"coordinates":"50.041669,19.961313","is_ex":"No","can_be_ex":"No","districts":["bieżanów-prokocim","podgórze"]},
 "Trzepakowy Krąg":{"coordinates":"50.043589,19.943758","is_ex":"Yes","can_be_ex":"Yes","districts":["podgórze"]},
@@ -1253,7 +1252,8 @@
 "Kompleks Sportowy na Miasteczku AGH":{"coordinates":"50.06816,19.903936","is_ex":"No","can_be_ex":"No","districts":["łobzów"]},
 "Afro Guy Mural on Pylon":{"coordinates":"50.053898,19.965965","is_ex":"No","can_be_ex":"No","districts":["grzegórzki"]},
 "Wartownia Zamku w Przegorzałach":{"coordinates":"50.049578,19.871052","is_ex":"No","can_be_ex":"No","districts":["pozostałe"]},
-"Psi Park Integracyjno-Rekreacyjny":{"coordinates":"50.077549,20.004821","is_ex":"No","can_be_ex":"No","districts":["czyżyny"]}
+"Psi Park Integracyjno-Rekreacyjny":{"coordinates":"50.077549,20.004821","is_ex":"No","can_be_ex":"No","districts":["czyżyny"]},
+"Polonia Hotel":{"coordinates":"50.064831,19.944790","is_ex":"No","can_be_ex":"No","districts":["centrum"]}
 },
 "393378906788331520":{
 "Sue Ryder":{"coordinates":"54.5082019,18.5437417","is_ex":"Yes","can_be_ex":"Yes","districts":["centrum"]},
