@@ -52,7 +52,6 @@
 "Church in Mydlniki":{"coordinates":"50.083837,19.845984","is_ex":"No","can_be_ex":"No","districts":["pozostałe"]},
 "Church of Our Lady of La Salet":{"coordinates":"50.0254,19.9303","is_ex":"No","can_be_ex":"No","districts":["łagiewniki-borek"],"notes":"Zgłoszone przez maaagda1"},
 "Cmentarz Borek Falecki Kaplica":{"coordinates":"50.009777,19.916506","is_ex":"No","can_be_ex":"No","districts":["łagiewniki-borek"]},
-"Cmentarz Borek Falecki Smutny Chlopiec":{"coordinates":"50.009597,19.915029","is_ex":"No","can_be_ex":"No","districts":["łagiewniki-borek"]},
 "Cmentarz Grębałów":{"coordinates":"50.091224,20.069649","is_ex":"No","can_be_ex":"No","districts":["nowa-huta"]},
 "Cmentarz Wojenny Nr 386 z I Wojny Światowej":{"coordinates":"50.035956,19.960932","is_ex":"No","can_be_ex":"No","districts":["bieżanów-prokocim"],"notes":"Zgłoszone przez Radkovitz"},
 "Colosseum":{"coordinates":"50.026848,19.920923","is_ex":"No","can_be_ex":"No","districts":["łagiewniki-borek"]},
@@ -358,7 +357,6 @@
 "Piaskownica NH":{"coordinates":"50.071297,20.041633","is_ex":"No","can_be_ex":"No","districts":["nowa-huta"]},
 "Ping Pong":{"coordinates":"50.055603,19.97804","is_ex":"Yes","can_be_ex":"Yes","districts":["grzegórzki"]},
 "Plac Bohaterow Getta":{"coordinates":"50.0466,19.954341","is_ex":"No","can_be_ex":"No","districts":["podgórze"]},
-"Plac Zabaw (Osiedle Europejskie)":{"coordinates":"50.015634,19.895094","is_ex":"Yes","can_be_ex":"Yes","districts":["ruczaj"],"notes":"Zgłoszone przez Radkovitz"},
 "Plac Zabaw (przy parku Jerzmanowskich)":{"coordinates":"50.021226,19.997737","is_ex":"No","can_be_ex":"No","districts":["bieżanów-prokocim"]},
 "Plac Zabaw (przy Parku Zdrojowym Swoszowice)":{"coordinates":"49.992426,19.932169","is_ex":"Yes","can_be_ex":"Yes","districts":["pozostałe"]},
 "Plac Zabaw (przy Wysłouchów)":{"coordinates":"50.006982,19.961506","is_ex":"No","can_be_ex":"No","districts":["podgórze-duchackie"]},
@@ -613,7 +611,7 @@
 "Mural Przy Ul Wilka-Wyrwińskiego":{"coordinates":"50.071274,19.967021","is_ex":"No","can_be_ex":"No","districts":["olsza"]},
 "Monument at Czerwone Maki Cemetery":{"coordinates":"50.012504,19.888566","is_ex":"No","can_be_ex":"No","districts":["ruczaj"]},
 "Drewniany Zamek":{"coordinates":"50.104321,20.012911","is_ex":"No","can_be_ex":"No","districts":["mistrzejowice"]},
-"Pamienka Z Pudełka":{"coordinates":"50.090239,20.021405","is_ex":"No","can_be_ex":"No","districts":["mistrzejowice"]},
+"Panienka Z Pudełka":{"coordinates":"50.090239,20.021405","is_ex":"No","can_be_ex":"No","districts":["mistrzejowice"]},
 "Muchomory":{"coordinates":"50.070983,20.035667","is_ex":"No","can_be_ex":"No","districts":["nowa-huta"]},
 "Plac Zabaw za Kościołem":{"coordinates":"50.074797,19.977956","is_ex":"No","can_be_ex":"No","districts":["olsza"]},
 "Ptasia Tablica Las Wolski":{"coordinates":"50.061572,19.854678","is_ex":"No","can_be_ex":"No","districts":["pozostałe"]},
@@ -625,7 +623,13 @@
 "Afro Guy Mural on Pylon":{"coordinates":"50.053898,19.965965","is_ex":"No","can_be_ex":"No","districts":["grzegórzki"]},
 "Wartownia Zamku w Przegorzałach":{"coordinates":"50.049578,19.871052","is_ex":"No","can_be_ex":"No","districts":["pozostałe"]},
 "Psi Park Integracyjno-Rekreacyjny":{"coordinates":"50.077549,20.004821","is_ex":"No","can_be_ex":"No","districts":["czyżyny"]},
-"Polonia Hotel":{"coordinates":"50.064831,19.944790","is_ex":"No","can_be_ex":"No","districts":["centrum"]}
+"Polonia Hotel":{"coordinates":"50.064831,19.944790","is_ex":"No","can_be_ex":"No","districts":["centrum"]},
+"Plac Zabaw Dąbska":{"coordinates":"50.069574,19.982861","is_ex":"No","can_be_ex":"No","districts":["grzegórzki"]},
+"KS Garbarnia":{"coordinates":"50.037067,19.935340","is_ex":"No","can_be_ex":"No","districts":["łagiewniki-borek"]},
+"Cmentarz Borek Falecki Aniol":{"coordinates":"50.009885,19.915153","is_ex":"No","can_be_ex":"No","districts":["łagiewniki-borek"]},
+"Plac Zabaw - Statek - nad Wilgą":{"coordinates":"50.033611,19.928183","is_ex":"No","can_be_ex":"No","districts":["łagiewniki-borek"]},
+"Tygrzyk paskowany, bukwica zwyczajna":{"coordinates":"50.037654,19.917803","is_ex":"No","can_be_ex":"No","districts":["dębniki"]},
+"Latarnia Umarłych na Czerwonych Makach":{"coordinates":"50.012333,19.88788","is_ex":"","can_be_ex":"","districts":["ruczaj"]}
 },
 "443820658934153216":{
 "4 Clubs Fountain":{"coordinates":"50.055361,19.93251","is_ex":"No","can_be_ex":"No","districts":["centrum"]},
@@ -680,7 +684,6 @@
 "Church in Mydlniki":{"coordinates":"50.083837,19.845984","is_ex":"No","can_be_ex":"No","districts":["pozostałe"]},
 "Church of Our Lady of La Salet":{"coordinates":"50.0254,19.9303","is_ex":"No","can_be_ex":"No","districts":["łagiewniki-borek"],"notes":"Zgłoszone przez maaagda1"},
 "Cmentarz Borek Falecki Kaplica":{"coordinates":"50.009777,19.916506","is_ex":"No","can_be_ex":"No","districts":["łagiewniki-borek"]},
-"Cmentarz Borek Falecki Smutny Chlopiec":{"coordinates":"50.009597,19.915029","is_ex":"No","can_be_ex":"No","districts":["łagiewniki-borek"]},
 "Cmentarz Grębałów":{"coordinates":"50.091224,20.069649","is_ex":"No","can_be_ex":"No","districts":["nowa-huta"]},
 "Cmentarz Wojenny Nr 386 z I Wojny Światowej":{"coordinates":"50.035956,19.960932","is_ex":"No","can_be_ex":"No","districts":["bieżanów-prokocim"],"notes":"Zgłoszone przez Radkovitz"},
 "Colosseum":{"coordinates":"50.026848,19.920923","is_ex":"No","can_be_ex":"No","districts":["łagiewniki-borek"]},
@@ -986,7 +989,6 @@
 "Piaskownica NH":{"coordinates":"50.071297,20.041633","is_ex":"No","can_be_ex":"No","districts":["nowa-huta"]},
 "Ping Pong":{"coordinates":"50.055603,19.97804","is_ex":"Yes","can_be_ex":"Yes","districts":["grzegórzki"]},
 "Plac Bohaterow Getta":{"coordinates":"50.0466,19.954341","is_ex":"No","can_be_ex":"No","districts":["podgórze"]},
-"Plac Zabaw (Osiedle Europejskie)":{"coordinates":"50.015634,19.895094","is_ex":"Yes","can_be_ex":"Yes","districts":["ruczaj"],"notes":"Zgłoszone przez Radkovitz"},
 "Plac Zabaw (przy parku Jerzmanowskich)":{"coordinates":"50.021226,19.997737","is_ex":"No","can_be_ex":"No","districts":["bieżanów-prokocim"]},
 "Plac Zabaw (przy Parku Zdrojowym Swoszowice)":{"coordinates":"49.992426,19.932169","is_ex":"Yes","can_be_ex":"Yes","districts":["pozostałe"]},
 "Plac Zabaw (przy Wysłouchów)":{"coordinates":"50.006982,19.961506","is_ex":"No","can_be_ex":"No","districts":["podgórze-duchackie"]},
@@ -1241,7 +1243,7 @@
 "Mural Przy Ul Wilka-Wyrwińskiego":{"coordinates":"50.071274,19.967021","is_ex":"No","can_be_ex":"No","districts":["olsza"]},
 "Monument at Czerwone Maki Cemetery":{"coordinates":"50.012504,19.888566","is_ex":"No","can_be_ex":"No","districts":["ruczaj"]},
 "Drewniany Zamek":{"coordinates":"50.104321,20.012911","is_ex":"No","can_be_ex":"No","districts":["mistrzejowice"]},
-"Pamienka Z Pudełka":{"coordinates":"50.090239,20.021405","is_ex":"No","can_be_ex":"No","districts":["mistrzejowice"]},
+"Panienka Z Pudełka":{"coordinates":"50.090239,20.021405","is_ex":"No","can_be_ex":"No","districts":["mistrzejowice"]},
 "Muchomory":{"coordinates":"50.070983,20.035667","is_ex":"No","can_be_ex":"No","districts":["nowa-huta"]},
 "Plac Zabaw za Kościołem":{"coordinates":"50.074797,19.977956","is_ex":"No","can_be_ex":"No","districts":["olsza"]},
 "Ptasia Tablica Las Wolski":{"coordinates":"50.061572,19.854678","is_ex":"No","can_be_ex":"No","districts":["pozostałe"]},
@@ -1253,7 +1255,13 @@
 "Afro Guy Mural on Pylon":{"coordinates":"50.053898,19.965965","is_ex":"No","can_be_ex":"No","districts":["grzegórzki"]},
 "Wartownia Zamku w Przegorzałach":{"coordinates":"50.049578,19.871052","is_ex":"No","can_be_ex":"No","districts":["pozostałe"]},
 "Psi Park Integracyjno-Rekreacyjny":{"coordinates":"50.077549,20.004821","is_ex":"No","can_be_ex":"No","districts":["czyżyny"]},
-"Polonia Hotel":{"coordinates":"50.064831,19.944790","is_ex":"No","can_be_ex":"No","districts":["centrum"]}
+"Polonia Hotel":{"coordinates":"50.064831,19.944790","is_ex":"No","can_be_ex":"No","districts":["centrum"]},
+"Plac Zabaw Dąbska":{"coordinates":"50.069574,19.982861","is_ex":"No","can_be_ex":"No","districts":["grzegórzki"]},
+"KS Garbarnia":{"coordinates":"50.037067,19.935340","is_ex":"No","can_be_ex":"No","districts":["łagiewniki-borek"]},
+"Cmentarz Borek Falecki Aniol":{"coordinates":"50.009885,19.915153","is_ex":"No","can_be_ex":"No","districts":["łagiewniki-borek"]},
+"Plac Zabaw - Statek - nad Wilgą":{"coordinates":"50.033611,19.928183","is_ex":"No","can_be_ex":"No","districts":["łagiewniki-borek"]},
+"Tygrzyk paskowany, bukwica zwyczajna":{"coordinates":"50.037654,19.917803","is_ex":"No","can_be_ex":"No","districts":["dębniki"]},
+"Latarnia Umarłych na Czerwonych Makach":{"coordinates":"50.012333,19.88788","is_ex":"","can_be_ex":"","districts":["ruczaj"]}
 },
 "393378906788331520":{
 "Sue Ryder":{"coordinates":"54.5082019,18.5437417","is_ex":"Yes","can_be_ex":"Yes","districts":["centrum"]},
@@ -1592,6 +1600,9 @@
 "Plac Zabaw (Sianów)":{"coordinates":"54.227024,16.295874","is_ex":"Yes","can_be_ex":"Yes","districts":["sianów"]},
 "Dłonie":{"coordinates":"54.226878,16.295321","is_ex":"Yes","can_be_ex":"Yes","districts":["sianów"]},
 "Krzyż na Rozdrożu":{"coordinates":"54.230715,16.306372","is_ex":"No","can_be_ex":"No","districts":["sianów"]},
-"Jesion wyniosły":{"coordinates":"54.188316,16.183585","is_ex":"No","can_be_ex":"No","districts":["centrum"]}
+"Jesion wyniosły":{"coordinates":"54.188316,16.183585","is_ex":"No","can_be_ex":"No","districts":["centrum"]},
+"Elektrownia Atomowa":{"coordinates":"54.194134,16.188585","is_ex":"No","can_be_ex":"No","districts":["centrum"]},
+"Drzewostany nasienne":{"coordinates":"54.202529,16.239325","is_ex":"No","can_be_ex":"No","districts":["wschód"]},
+"Plac Zabaw (Kwiatkowskiego)":{"coordinates":"54.204772,16.175906","is_ex":"No","can_be_ex":"No","districts":["północ"]}
 }
 }
